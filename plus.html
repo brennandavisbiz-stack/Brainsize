@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BrainSize+ — Train Your Mind</title>
+<meta name="description" content="BrainSize+ turns your IQ Profile into a daily training system: profile-tuned brain games, unlimited retests, score tracking, and tailored guidance. Cancel anytime.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --brand-500:#7A5CFF;--brand-600:#5B3DF5;--brand-400:#9B85FF;
+    --bg:#0B0B12;--bg-2:#12121C;--panel:#16162280;--panel-solid:#171724;
+    --line:rgba(255,255,255,.10);--line-2:rgba(255,255,255,.16);
+    --text:#F4F3FA;--text-2:rgba(244,243,250,.66);--text-3:rgba(244,243,250,.42);
+    --green:#6EE7A0;--radius:24px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:var(--text);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{text-decoration:none;color:inherit}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+  .rv{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  .rv.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}}
+
+  .glow{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .glow span{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5}
+  .glow .g1{width:560px;height:560px;background:#3a1f9e;top:-200px;left:-160px}
+  .glow .g2{width:480px;height:480px;background:#5B3DF5;top:30%;right:-200px;opacity:.32}
+  .glow .g3{width:420px;height:420px;background:#241466;bottom:-160px;left:20%;opacity:.4}
+  body>*:not(.glow){position:relative;z-index:1}
+
+  nav{position:sticky;top:0;background:rgba(11,11,18,.7);backdrop-filter:blur(14px);z-index:50;border-bottom:1px solid transparent;transition:border-color .2s}
+  nav.scrolled{border-color:var(--line)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:74px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;color:#fff}
+  .logo-mark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--brand-500),var(--brand-600));display:flex;align-items:center;justify-content:center;flex:none;box-shadow:0 0 24px rgba(123,92,255,.5)}
+  .logo-mark svg{width:22px;height:22px}
+  .logo .plus{color:var(--brand-400);font-weight:800}
+  .nav-links{display:flex;align-items:center;gap:32px;font-weight:600;font-size:15px;color:var(--text-2)}
+  .nav-links a:hover{color:#fff}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:700;font-family:inherit;border:none;cursor:pointer;border-radius:999px;padding:14px 30px;font-size:16px;transition:transform .15s,box-shadow .15s,background .15s}
+  .btn.grad{background:linear-gradient(135deg,var(--brand-500),var(--brand-600));color:#fff;box-shadow:0 8px 30px rgba(123,92,255,.45)}
+  .btn.grad:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(123,92,255,.6)}
+  .btn.small{padding:10px 22px;font-size:15px}
+  .btn.big{padding:18px 42px;font-size:18px}
+  .btn.ghost{background:rgba(255,255,255,.06);color:#fff;border:1px solid var(--line-2)}
+  .btn.ghost:hover{background:rgba(255,255,255,.12)}
+
+  .kicker{display:inline-flex;align-items:center;gap:9px;font-size:13px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brand-400);background:rgba(123,92,255,.12);border:1px solid rgba(123,92,255,.3);padding:8px 18px;border-radius:999px;margin-bottom:26px}
+
+  .hero{padding:90px 0 72px;text-align:center}
+  .hero h1{font-size:clamp(40px,6.5vw,76px);font-weight:800;letter-spacing:-.03em;line-height:1.02;max-width:880px;margin:0 auto 22px}
+  .hero h1 .shine{background:linear-gradient(100deg,#fff 20%,var(--brand-400) 50%,#fff 80%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .hero .sub{font-size:clamp(17px,2.2vw,21px);color:var(--text-2);max-width:600px;margin:0 auto 36px;font-weight:500}
+  .hero-ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .hero-note{margin-top:20px;font-size:14px;color:var(--text-3);font-weight:600}
+
+  section{padding:84px 0}
+  .sec-head{text-align:center;max-width:680px;margin:0 auto 54px}
+  .sec-head .kicker{margin-bottom:18px}
+  .sec-head h2{font-size:clamp(28px,4vw,44px);font-weight:800;letter-spacing:-.02em;margin-bottom:14px}
+  .sec-head p{color:var(--text-2);font-size:18px;font-weight:500}
+
+  .glass{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid var(--line);border-radius:var(--radius);backdrop-filter:blur(8px)}
+
+  .fgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+  .feat{padding:34px 32px;transition:transform .2s,border-color .2s}
+  .feat:hover{transform:translateY(-4px);border-color:rgba(123,92,255,.45)}
+  .feat .ic{width:54px;height:54px;border-radius:16px;background:rgba(123,92,255,.14);border:1px solid rgba(123,92,255,.28);display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+  .feat .ic svg{width:26px;height:26px;stroke:var(--brand-400);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .feat h3{font-size:20px;font-weight:800;margin-bottom:9px}
+  .feat p{color:var(--text-2);font-size:15.5px;font-weight:500}
+
+  .showcase{display:grid;grid-template-columns:1.05fr 1fr;gap:56px;align-items:center}
+  .showcase h2{font-size:clamp(26px,3.4vw,38px);font-weight:800;letter-spacing:-.02em;margin-bottom:16px}
+  .showcase .lead{color:var(--text-2);font-size:16.5px;margin-bottom:24px}
+  .plist{list-style:none}
+  .plist li{display:flex;gap:13px;margin-bottom:15px;font-weight:600;font-size:15.5px;color:var(--text)}
+  .plist .ic{width:24px;height:24px;flex:none;border-radius:8px;background:rgba(110,231,160,.14);display:flex;align-items:center;justify-content:center;margin-top:1px}
+  .plist .ic svg{width:13px;height:13px;stroke:var(--green);fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+
+  .track{padding:34px}
+  .tc-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+  .tc-head .t{font-weight:800;font-size:16px}
+  .tc-head .delta{font-weight:800;font-size:14px;color:var(--green);background:rgba(110,231,160,.12);padding:4px 12px;border-radius:999px}
+  .tc-sub{font-size:13px;color:var(--text-3);font-weight:600}
+
+  .chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:680px;margin:0 auto}
+  .chip{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:999px;padding:10px 20px;font-weight:700;font-size:15px;color:var(--text-2);transition:all .2s}
+  .chip:hover{color:#fff;border-color:rgba(123,92,255,.5);background:rgba(123,92,255,.12)}
+
+  .games{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .game{padding:26px 22px;text-align:center;transition:transform .2s,border-color .2s}
+  .game:hover{transform:translateY(-4px);border-color:rgba(123,92,255,.45)}
+  .game .gic{width:50px;height:50px;margin:0 auto 14px;border-radius:14px;background:rgba(123,92,255,.14);display:flex;align-items:center;justify-content:center}
+  .game .gic svg{width:25px;height:25px;stroke:var(--brand-400);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .game h4{font-size:15px;font-weight:800;margin-bottom:5px}
+  .game p{font-size:13px;color:var(--text-3);font-weight:500}
+
+  .price-wrap{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;max-width:760px;margin:0 auto}
+  .plan{padding:36px 34px;position:relative}
+  .plan.feat-plan{border:1.5px solid rgba(123,92,255,.55);box-shadow:0 0 50px rgba(123,92,255,.2)}
+  .plan .ptag{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand-400);margin-bottom:14px}
+  .plan .save{position:absolute;top:22px;right:24px;font-size:12px;font-weight:800;color:var(--green);background:rgba(110,231,160,.12);padding:5px 12px;border-radius:999px}
+  .plan .amt{font-size:46px;font-weight:800;letter-spacing:-.03em;line-height:1}
+  .plan .amt small{font-size:16px;font-weight:600;color:var(--text-3)}
+  .plan .per{font-size:14px;color:var(--text-3);font-weight:600;margin:6px 0 24px}
+  .plan .btn{width:100%}
+
+  .faq{max-width:760px;margin:0 auto}
+  details{border:1px solid var(--line);border-radius:18px;padding:22px 26px;margin-bottom:12px;background:rgba(255,255,255,.03)}
+  summary{font-weight:700;font-size:17px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:'+';font-size:24px;font-weight:600;color:var(--brand-400);transition:transform .2s;flex:none}
+  details[open] summary::after{transform:rotate(45deg)}
+  details p{margin-top:14px;color:var(--text-2);font-size:16px}
+
+  .final{text-align:center;padding:96px 40px;border-radius:32px;margin:0 24px;background:linear-gradient(135deg,rgba(123,92,255,.2),rgba(91,61,245,.08));border:1px solid rgba(123,92,255,.35);position:relative;overflow:hidden}
+  .final::before{content:'';position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(123,92,255,.4),transparent 70%);top:-300px;left:50%;transform:translateX(-50%);pointer-events:none}
+  .final>*{position:relative}
+  .final h2{font-size:clamp(30px,4.5vw,48px);font-weight:800;letter-spacing:-.025em;margin-bottom:16px}
+  .final p{color:var(--text-2);font-size:18px;font-weight:500;margin-bottom:34px;max-width:540px;margin-left:auto;margin-right:auto}
+  .final .mini{margin-top:18px;font-size:14px;color:var(--text-3);font-weight:600}
+
+  footer{padding:64px 0 48px;border-top:1px solid var(--line);margin-top:90px}
+  .foot{display:flex;justify-content:space-between;gap:40px;flex-wrap:wrap}
+  .foot-col h4{font-size:14px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);margin-bottom:14px}
+  .foot-col a{display:block;font-size:15px;font-weight:600;color:var(--text-2);margin-bottom:10px}
+  .foot-col a:hover{color:#fff}
+  .disclaimer{margin-top:48px;font-size:13px;color:var(--text-3);max-width:780px;font-weight:500}
+  .back-link{display:inline-flex;align-items:center;gap:7px;color:var(--text-2);font-weight:700;font-size:14px}
+  .back-link:hover{color:#fff}
+
+  @media (max-width:980px){.fgrid,.showcase,.price-wrap{grid-template-columns:1fr;gap:32px}.games{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:880px){.nav-links{display:none}section{padding:60px 0}.final{margin:0 16px;padding:64px 26px}}
+</style>
+</head>
+<body>
+
+<div class="glow"><span class="g1"></span><span class="g2"></span><span class="g3"></span></div>
+
+<nav id="nav">
+  <div class="wrap nav-inner">
+    <a class="logo" href="/"><span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44A2.5 2.5 0 0 1 4 17.5a2.5 2.5 0 0 1-1.96-4A2.5 2.5 0 0 1 2 9.5a2.5 2.5 0 0 1 1.04-4.96A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44A2.5 2.5 0 0 0 20 17.5a2.5 2.5 0 0 0 1.96-4A2.5 2.5 0 0 0 22 9.5a2.5 2.5 0 0 0-1.04-4.96A2.5 2.5 0 0 0 14.5 2Z"/></svg></span>BrainSize<span class="plus">+</span></a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#games">Brain games</a>
+      <a href="#pricing">Pricing</a>
+      <a href="/">&larr; Main site</a>
+    </div>
+    <a class="btn grad small" href="/instructions">Get started</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="kicker">&#10022; BrainSize+ Membership</span>
+    <h1>Don't just measure it.<br><span class="shine">Train it.</span></h1>
+    <p class="sub">Your score is a starting line. BrainSize+ turns the engine behind our test into a daily training ground built around your IQ Profile — and proves it's working.</p>
+    <div class="hero-ctas">
+      <a class="btn grad big" href="/instructions">Start with your free test</a>
+      <a class="btn ghost big" href="#pricing">See membership</a>
+    </div>
+    <p class="hero-note">You need a profile before you can train it — the test is free.</p>
+  </div>
+</header>
+
+<section id="features">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="kicker">What's inside</span>
+      <h2>A full training system, not a quiz</h2>
+      <p>Everything calibrated to your measured profile — whether you're a River, an Anchor, or a Prism.</p>
+    </div>
+    <div class="fgrid">
+      <div class="feat glass rv">
+        <div class="ic"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4M15 11h.01M18 13h.01"/></svg></div>
+        <h3>Profile-tuned brain games</h3>
+        <p>Daily exercises that target your specific weaker domains — not a generic brain gym that trains everyone the same way.</p>
+      </div>
+      <div class="feat glass rv">
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9"/><path d="M3 12V7M3 12h5"/></svg></div>
+        <h3>Unlimited retests</h3>
+        <p>Retake the full assessment whenever you want, with fresh questions every time. No repeats, no memorizing your way up.</p>
+      </div>
+      <div class="feat glass rv">
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></div>
+        <h3>Score tracking</h3>
+        <p>Watch all five cognitive domains move over weeks and months, and see whether your profile itself shifts as you grow.</p>
+      </div>
+      <div class="feat glass rv">
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+        <h3>Tailored reading &amp; programs</h3>
+        <p>Articles, courses, and habit guidance written for how your profile actually learns, focuses, and retains.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap showcase">
+    <div class="rv">
+      <span class="kicker">Proof it works</span>
+      <h2>See the needle move</h2>
+      <p class="lead">Anyone can claim training helps. BrainSize+ shows you — retest on fresh questions and track your real trajectory across every domain.</p>
+      <ul class="plist">
+        <li><span class="ic"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>Domain-by-domain progress, not a single vanity number</li>
+        <li><span class="ic"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>Fresh question sets keep every retest honest</li>
+        <li><span class="ic"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>Streaks and milestones to keep momentum</li>
+      </ul>
+    </div>
+    <div class="track glass rv">
+      <div class="tc-head"><span class="t">Your score over time</span><span class="delta">&#9650; +9 pts</span></div>
+      <p class="tc-sub" style="margin-bottom:22px">Retests every 2 weeks · fresh questions each attempt</p>
+      <svg viewBox="0 0 420 200" width="100%" aria-hidden="true">
+        <line x1="0" y1="160" x2="420" y2="160" stroke="rgba(255,255,255,.1)"/>
+        <line x1="0" y1="110" x2="420" y2="110" stroke="rgba(255,255,255,.1)"/>
+        <line x1="0" y1="60" x2="420" y2="60" stroke="rgba(255,255,255,.1)"/>
+        <path d="M20,150 L86,142 L152,128 L218,132 L284,108 L350,92 L400,78" fill="none" stroke="#9B85FF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M20,150 L86,142 L152,128 L218,132 L284,108 L350,92 L400,78 L400,180 L20,180 Z" fill="url(#g1)" opacity=".3"/>
+        <defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9B85FF"/><stop offset="1" stop-color="transparent"/></linearGradient></defs>
+        <g fill="#fff"><circle cx="20" cy="150" r="5"/><circle cx="86" cy="142" r="5"/><circle cx="152" cy="128" r="5"/><circle cx="218" cy="132" r="5"/><circle cx="284" cy="108" r="5"/><circle cx="350" cy="92" r="5"/><circle cx="400" cy="78" r="7" fill="#6EE7A0"/></g>
+        <text x="20" y="135" text-anchor="middle" font-size="12" font-weight="700" fill="rgba(255,255,255,.7)" font-family="Plus Jakarta Sans">108</text>
+        <text x="400" y="62" text-anchor="middle" font-size="13" font-weight="800" fill="#6EE7A0" font-family="Plus Jakarta Sans">117</text>
+      </svg>
+      <p class="tc-sub" style="text-align:center;margin-top:14px">Sample member progress · individual results vary</p>
+    </div>
+  </div>
+</section>
+
+<section id="games">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="kicker">Daily training</span>
+      <h2>Games with a point</h2>
+      <p>Each one maps to a cognitive domain we measure — so playing is training, and training shows up in your score.</p>
+    </div>
+    <div class="games">
+      <div class="game glass rv"><div class="gic"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/><path d="M8 6h8M6 8v8M18 8v8M8 18h8"/></svg></div><h4>Matrix Rush</h4><p>Pattern recognition</p></div>
+      <div class="game glass rv"><div class="gic"><svg viewBox="0 0 24 24"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="m2 17 10 5 10-5M2 12l10 5 10-5"/></svg></div><h4>Foldscape</h4><p>Spatial reasoning</p></div>
+      <div class="game glass rv"><div class="gic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><h4>Quick Draw</h4><p>Processing speed</p></div>
+      <div class="game glass rv"><div class="gic"><svg viewBox="0 0 24 24"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="m2 17 10 5 10-5"/></svg></div><h4>Recall Stack</h4><p>Working memory</p></div>
+    </div>
+    <!-- DEV NOTE: game names are placeholders — swap for real titles as the catalog is built. -->
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="kicker">Built around you</span>
+      <h2>One membership, eight versions of it</h2>
+      <p>BrainSize+ looks different depending on your profile — because a River and an Anchor need to train completely different things.</p>
+    </div>
+    <div class="chips rv">
+      <span class="chip">The Explorer</span><span class="chip">The River</span><span class="chip">The Lighthouse</span><span class="chip">The Strategist</span><span class="chip">The Architect</span><span class="chip">The Quicksilver</span><span class="chip">The Anchor</span><span class="chip">The Prism</span>
+    </div>
+    <p style="text-align:center;margin-top:28px"><a class="back-link" href="/profiles">Explore all eight IQ Profiles &rarr;</a></p>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="kicker">Membership</span>
+      <h2>Simple. Cancel in one click.</h2>
+      <p>No lock-in, no retention maze. Your past reports stay yours forever, even if you leave.</p>
+    </div>
+    <div class="price-wrap">
+      <div class="plan glass rv">
+        <div class="ptag">Monthly</div>
+        <div class="amt">$7.99<small>/mo</small></div>
+        <div class="per">Billed monthly · cancel anytime</div>
+        <a class="btn ghost" href="/instructions">Start free test first</a>
+      </div>
+      <div class="plan glass feat-plan rv">
+        <span class="save">Save 37%</span>
+        <div class="ptag">Annual</div>
+        <div class="amt">$59.99<small>/yr</small></div>
+        <div class="per">That's $5/mo · cancel anytime</div>
+        <a class="btn grad" href="/instructions">Start free test first</a>
+      </div>
+    </div>
+    <!-- DEV NOTE: BrainSize+ pricing ($7.99/mo, $59.99/yr) is a PLACEHOLDER pending final pricing. -->
+    <p style="text-align:center;color:var(--text-3);font-weight:600;font-size:14px;margin-top:26px">Membership unlocks after you take your free test and get your profile.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head rv"><span class="kicker">Good to know</span><h2>Membership questions</h2></div>
+    <div class="faq">
+      <details class="rv"><summary>Do I need to take the test first?</summary><p>Yes — BrainSize+ is built around your IQ Profile, so you take the free test and get matched to a profile before membership unlocks. That's what makes the training tailored instead of generic.</p></details>
+      <details class="rv"><summary>How do I cancel?</summary><p>Account → Subscription → Cancel. One click, effective at the end of your billing period. No emails, no phone calls, no "are you sure" gauntlet. You keep access until the period ends and your past reports stay yours forever.</p></details>
+      <details class="rv"><summary>Are retests really fresh every time?</summary><p>Yes. Our question bank holds thousands of calibrated items, so no two of your tests draw the same set. You can't memorize your way to a higher score — which is exactly why the tracking means something.</p></details>
+      <details class="rv"><summary>Is the $3.99 report included?</summary><p>Members get the full report on every test they take, included. The one-time $3.99 report is for people who only want their results once without a membership.</p></details>
+    </div>
+  </div>
+</section>
+
+<div class="wrap" style="max-width:1208px;padding:0">
+  <div class="final rv">
+    <span class="kicker">&#10022; BrainSize+</span>
+    <h2>Your mind, on a training plan.</h2>
+    <p>Start with the free test, meet your profile, and decide if you want to train it. No pressure, no lock-in.</p>
+    <a class="btn grad big" href="/instructions">Take the free test</a>
+    <p class="mini">30 questions · ~10 minutes · no account needed</p>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <a class="logo" href="/" style="align-self:flex-start"><span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44A2.5 2.5 0 0 1 4 17.5a2.5 2.5 0 0 1-1.96-4A2.5 2.5 0 0 1 2 9.5a2.5 2.5 0 0 1 1.04-4.96A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44A2.5 2.5 0 0 0 20 17.5a2.5 2.5 0 0 0 1.96-4A2.5 2.5 0 0 0 22 9.5a2.5 2.5 0 0 0-1.04-4.96A2.5 2.5 0 0 0 14.5 2Z"/></svg></span>BrainSize<span class="plus">+</span></a>
+      <div class="foot-col">
+        <h4>BrainSize+</h4>
+        <a href="#features">Features</a>
+        <a href="#games">Brain games</a>
+        <a href="#pricing">Pricing</a>
+      </div>
+      <div class="foot-col">
+        <h4>Main site</h4>
+        <a href="/">Home</a>
+        <a href="/profiles">IQ Profiles</a>
+        <a href="/methodology">Methodology</a>
+        <a href="/instructions">Take the test</a>
+      </div>
+      <div class="foot-col">
+        <h4>Legal</h4>
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
+        <a href="/refunds">Refund policy</a>
+      </div>
+    </div>
+    <p class="disclaimer">BrainSize provides cognitive assessment estimates for personal insight and entertainment. It is not a clinical diagnostic instrument, and scores should not be used for medical, educational, or employment decisions. IQ Profiles are descriptive tools for self-understanding, not clinical classifications. Individual training results vary.</p>
+  </div>
+</footer>
+
+<script>
+  const nav=document.getElementById('nav');
+  addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>8),{passive:true});
+  const reveal=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');reveal.unobserve(e.target)}})},{threshold:.18});
+  document.querySelectorAll('.rv').forEach(el=>reveal.observe(el));
+</script>
+</body>
+</html>

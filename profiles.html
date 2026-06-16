@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IQ Profiles — BrainSize</title>
+<meta name="description" content="Your IQ score is one number. Your profile is the shape behind it. BrainSize reads your pattern across five validated cognitive domains and matches you to one of eight research-grounded profiles.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --brand-600:#5B3DF5;--brand-700:#4A2FD9;--brand-100:#ECE8FE;--brand-050:#F5F3FF;
+    --ink-900:#111114;--ink-600:#5A5A66;--ink-400:#9A9AA6;
+    --surface:#FFFFFF;--surface-alt:#F7F7F9;--border:#ECECF1;
+    --green:#1D7A3E;--green-bg:#E7F6EC;--radius:24px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:var(--ink-900);background:var(--surface);line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{text-decoration:none;color:inherit}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+  .rv{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+  .rv.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}}
+
+  /* Nav */
+  nav{position:sticky;top:0;background:rgba(255,255,255,.85);backdrop-filter:blur(12px);z-index:50;border-bottom:1px solid transparent;transition:border-color .2s}
+  nav.scrolled{border-color:var(--border)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:72px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px}
+  .logo-mark{width:38px;height:38px;border-radius:12px;background:var(--brand-600);display:flex;align-items:center;justify-content:center;flex:none}
+  .logo-mark svg{width:22px;height:22px}
+  .nav-links{display:flex;align-items:center;gap:32px;font-weight:600;font-size:15px;color:var(--ink-600)}
+  .nav-links a:hover{color:var(--ink-900)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--brand-600);color:#fff;font-weight:700;font-family:inherit;border:none;cursor:pointer;border-radius:999px;padding:13px 28px;font-size:16px;transition:background .15s,transform .15s;box-shadow:0 6px 20px rgba(91,61,245,.25)}
+  .btn:hover{background:var(--brand-700);transform:translateY(-1px)}
+  .btn.small{padding:10px 22px;font-size:15px;box-shadow:none}
+  .btn.big{padding:17px 40px;font-size:18px}
+  .btn.outline{background:#fff;color:var(--brand-600);border:1.5px solid #d8d0fb;box-shadow:none}
+  .btn.outline:hover{background:var(--brand-050)}
+  .btn.white{background:#fff;color:var(--brand-600);box-shadow:none}
+  .btn.white:hover{background:var(--brand-050)}
+
+  /* Hero */
+  .phero{background:linear-gradient(180deg,var(--brand-050) 0%,rgba(245,243,255,.4) 55%,#fff 100%);padding:80px 0 64px;text-align:center;overflow:hidden;position:relative}
+  .phero::before,.phero::after{content:'';position:absolute;border-radius:50%;filter:blur(90px);opacity:.5;pointer-events:none}
+  .phero::before{width:420px;height:420px;background:#dcd3ff;top:-160px;left:-120px}
+  .phero::after{width:380px;height:380px;background:#e9e3ff;top:40px;right:-140px}
+  .phero>.wrap{position:relative;z-index:1}
+  .eyebrow{display:inline-block;font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--brand-600);background:var(--brand-100);padding:7px 16px;border-radius:999px;margin-bottom:18px}
+  .phero h1{font-size:clamp(36px,5.5vw,60px);font-weight:800;letter-spacing:-.025em;line-height:1.07;max-width:840px;margin:0 auto 20px}
+  .phero h1 em{font-style:normal;color:var(--brand-600)}
+  .phero .sub{font-size:clamp(17px,2.2vw,21px);color:var(--ink-600);max-width:640px;margin:0 auto 34px;font-weight:500}
+  .phero-ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+
+  /* Sections */
+  section{padding:88px 0}
+  .sec-head{text-align:center;max-width:700px;margin:0 auto 56px}
+  .sec-head .eyebrow{margin-bottom:16px}
+  .sec-head h2{font-size:clamp(28px,4vw,42px);font-weight:800;letter-spacing:-.02em;margin-bottom:14px}
+  .sec-head p{color:var(--ink-600);font-size:18px;font-weight:500}
+  .alt{background:var(--surface-alt)}
+
+  /* How profiles work — 3 steps */
+  .flow{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .fcard{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:32px 28px;box-shadow:0 2px 10px rgba(17,17,20,.03)}
+  .fcard .fnum{width:42px;height:42px;border-radius:14px;background:var(--brand-600);color:#fff;font-weight:800;font-size:18px;display:flex;align-items:center;justify-content:center;margin-bottom:18px}
+  .fcard h3{font-size:19px;font-weight:800;margin-bottom:9px}
+  .fcard p{color:var(--ink-600);font-size:15.5px}
+
+  /* Science band */
+  .science{background:var(--ink-900);border-radius:var(--radius);padding:48px 52px;color:#fff;position:relative;overflow:hidden}
+  .science::before{content:'';position:absolute;width:460px;height:460px;border-radius:50%;background:radial-gradient(circle,#5B3DF5,transparent 70%);opacity:.3;top:-180px;right:-120px;pointer-events:none}
+  .science-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;align-items:center;position:relative;z-index:1}
+  .science h2{font-size:clamp(24px,3vw,34px);font-weight:800;letter-spacing:-.02em;margin-bottom:16px}
+  .science p{color:rgba(255,255,255,.74);font-size:16px;font-weight:500;margin-bottom:16px}
+  .science p:last-child{margin-bottom:0}
+  .science .ref{font-size:13px;color:rgba(255,255,255,.45);font-weight:600;margin-top:22px;border-left:2px solid rgba(255,255,255,.2);padding-left:14px}
+  .domain-bars{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:28px}
+  .db-title{font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:20px}
+  .db-row{display:flex;align-items:center;gap:14px;margin-bottom:15px}
+  .db-row:last-child{margin-bottom:0}
+  .db-row span{width:128px;flex:none;font-size:13.5px;font-weight:700;color:rgba(255,255,255,.9)}
+  .db-track{flex:1;height:9px;background:rgba(255,255,255,.12);border-radius:999px;overflow:hidden}
+  .db-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#8E79F9,#C9BCFF);width:0;transition:width 1s cubic-bezier(.2,.7,.2,1)}
+
+  /* Axis explainer */
+  .axis-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 12px 40px rgba(17,17,20,.06);padding:40px;max-width:880px;margin:0 auto}
+  .axis-row{display:flex;align-items:center;gap:24px;margin-bottom:24px}
+  .axis-row:last-child{margin-bottom:0}
+  .axis-label{width:150px;flex:none;font-weight:800;font-size:14px;text-align:right;color:var(--ink-900);text-transform:uppercase;letter-spacing:.04em}
+  .axis-bar{flex:1;height:60px;border-radius:16px;background:linear-gradient(90deg,var(--brand-050),var(--brand-100));position:relative;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-weight:700;font-size:14.5px;color:var(--ink-900)}
+  .axis-bar small{display:block;font-weight:600;color:var(--ink-400);font-size:12px;margin-top:2px}
+  .axis-foot{text-align:center;margin-top:28px;font-size:15px;color:var(--ink-600);font-weight:500}
+  .axis-foot strong{color:var(--ink-900)}
+
+  /* Profile gallery */
+  .pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+  .pcard{background:#fff;border:1px solid var(--border);border-radius:22px;padding:28px 24px;transition:transform .2s,box-shadow .2s,border-color .2s}
+  .pcard:hover{transform:translateY(-5px);box-shadow:0 18px 44px rgba(17,17,20,.1);border-color:#d8d0fb}
+  .pcard .glyph{width:58px;height:58px;border-radius:16px;background:var(--brand-050);display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+  .pcard .glyph svg{width:30px;height:30px;stroke:var(--brand-600);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .pcard h3{font-size:19px;font-weight:800;margin-bottom:6px}
+  .pcard .essence{font-size:14.5px;color:var(--ink-600);font-weight:500;margin-bottom:14px;min-height:44px}
+  .pcard .sig{font-size:11.5px;font-weight:700;color:var(--brand-600);text-transform:uppercase;letter-spacing:.05em;background:var(--brand-100);display:inline-block;padding:5px 11px;border-radius:999px}
+
+  /* Deep dive */
+  .dd{background:#fff;border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 16px 48px rgba(17,17,20,.07);overflow:hidden;margin-bottom:28px}
+  .dd-head{display:flex;align-items:center;gap:20px;padding:30px 36px;background:linear-gradient(120deg,var(--brand-050),#fff)}
+  .dd-head .glyph{width:66px;height:66px;border-radius:18px;background:#fff;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex:none}
+  .dd-head .glyph svg{width:34px;height:34px;stroke:var(--brand-600);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .dd-head h3{font-size:23px;font-weight:800}
+  .dd-head .essence{font-size:14.5px;color:var(--ink-600);font-weight:600;margin-top:3px}
+  .dd-head .tag{margin-left:auto;font-size:12px;font-weight:700;color:var(--brand-600);background:var(--brand-100);padding:6px 13px;border-radius:999px;white-space:nowrap;flex:none}
+  .dd-sig{display:flex;gap:0;border-bottom:1px solid var(--border);background:var(--surface-alt)}
+  .dd-sig div{flex:1;text-align:center;padding:14px 8px;border-right:1px solid var(--border)}
+  .dd-sig div:last-child{border-right:none}
+  .dd-sig .dl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-400);margin-bottom:6px}
+  .dd-sig .dm{display:flex;gap:3px;justify-content:center}
+  .dd-sig .dot{width:7px;height:7px;border-radius:50%;background:var(--border)}
+  .dd-sig .dot.on{background:var(--brand-600)}
+  .dd-body{display:grid;grid-template-columns:repeat(2,1fr)}
+  .dd-cell{padding:26px 36px;border-top:1px solid var(--border)}
+  .dd-cell:nth-child(odd){border-right:1px solid var(--border)}
+  .dd-cell h4{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--brand-600);margin-bottom:11px;display:flex;align-items:center;gap:9px}
+  .dd-cell h4 svg{width:18px;height:18px;stroke:var(--brand-600);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .dd-cell p{font-size:15px;color:var(--ink-600);font-weight:500}
+
+  /* Value strip */
+  .vstrip{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+  .vbox{text-align:center;padding:12px}
+  .vbox .vic{width:56px;height:56px;margin:0 auto 16px;border-radius:18px;background:#fff;border:1px solid var(--border);display:flex;align-items:center;justify-content:center}
+  .vbox .vic svg{width:28px;height:28px;stroke:var(--brand-600);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .vbox h3{font-size:17px;font-weight:800;margin-bottom:8px}
+  .vbox p{font-size:14.5px;color:var(--ink-600);font-weight:500}
+
+  /* CTA */
+  .final-cta{background:linear-gradient(135deg,var(--brand-600),#7A5CFF);border-radius:32px;padding:72px 40px;text-align:center;color:#fff;margin:0 24px;position:relative;overflow:hidden}
+  .final-cta::before{content:'';position:absolute;inset:0;background:radial-gradient(600px 300px at 80% 0%,rgba(255,255,255,.18),transparent)}
+  .final-cta>*{position:relative}
+  .final-cta h2{font-size:clamp(28px,4vw,42px);font-weight:800;letter-spacing:-.02em;margin-bottom:14px}
+  .final-cta p{opacity:.88;font-size:18px;font-weight:500;margin-bottom:32px;max-width:560px;margin-left:auto;margin-right:auto}
+  .final-cta .mini{margin-top:18px;font-size:14px;font-weight:600;opacity:.75}
+
+  /* Footer */
+  footer{padding:64px 0 48px;border-top:1px solid var(--border);margin-top:96px}
+  .foot{display:flex;justify-content:space-between;gap:40px;flex-wrap:wrap}
+  .foot-col h4{font-size:14px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-600);margin-bottom:14px}
+  .foot-col a{display:block;font-size:15px;font-weight:600;color:var(--ink-600);margin-bottom:10px}
+  .foot-col a:hover{color:var(--ink-900)}
+  .disclaimer{margin-top:48px;font-size:13px;color:var(--ink-400);max-width:780px;font-weight:500}
+
+  @media (max-width:980px){.pgrid{grid-template-columns:repeat(2,1fr)}.vstrip{grid-template-columns:repeat(2,1fr);gap:32px 16px}.science-grid{grid-template-columns:1fr;gap:32px}}
+  @media (max-width:880px){
+    .nav-links{display:none}
+    .flow{grid-template-columns:1fr}
+    .dd-body{grid-template-columns:1fr}
+    .dd-cell:nth-child(odd){border-right:none}
+    .axis-row{flex-direction:column;gap:10px}
+    .axis-label{width:auto;text-align:center}
+    section{padding:64px 0}
+    .final-cta{margin:0 16px;padding:56px 24px}
+    .science{padding:40px 28px}
+    .dd-head{flex-wrap:wrap}.dd-head .tag{margin-left:0}
+    .dd-sig .dl{font-size:10px}
+  }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="wrap nav-inner">
+    <a class="logo" href="/"><span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44A2.5 2.5 0 0 1 4 17.5a2.5 2.5 0 0 1-1.96-4A2.5 2.5 0 0 1 2 9.5a2.5 2.5 0 0 1 1.04-4.96A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44A2.5 2.5 0 0 0 20 17.5a2.5 2.5 0 0 0 1.96-4A2.5 2.5 0 0 0 22 9.5a2.5 2.5 0 0 0-1.04-4.96A2.5 2.5 0 0 0 14.5 2Z"/></svg></span>BrainSize</a>
+    <div class="nav-links">
+      <a href="/profiles">IQ Profiles</a>
+      <a href="/compare">Compare</a>
+      <a href="/plus">BrainSize+</a>
+      <a href="/pricing">Pricing</a>
+      <a href="/methodology">Methodology</a>
+    </div>
+    <a class="btn small" href="/instructions">Start Test</a>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<header class="phero">
+  <div class="wrap">
+    <span class="eyebrow">IQ Profiles</span>
+    <h1>One score. Eight ways<br>of being <em>smart</em>.</h1>
+    <p class="sub">Two people can score an identical 120 and have completely different minds. BrainSize reads the <em>shape</em> of your intelligence across five measured domains and matches you to one of eight cognitive profiles — each grounded in how cognition is actually structured.</p>
+    <div class="phero-ctas">
+      <a class="btn big" href="/instructions">Find your profile</a>
+      <a class="btn big outline" href="#gallery">Meet the eight</a>
+    </div>
+  </div>
+</header>
+
+<!-- ===== WHY PROFILES ===== -->
+<section>
+  <div class="wrap">
+    <div class="sec-head rv">
+      <h2>A single number hides the interesting part</h2>
+      <p>"IQ 117" tells you how high you scored. It says nothing about <em>how</em> you got there — whether you reasoned fast or deep, visually or verbally. That shape is what actually predicts how you learn, work, and grow.</p>
+    </div>
+    <div class="flow">
+      <div class="fcard rv">
+        <div class="fnum">1</div>
+        <h3>Take the assessment</h3>
+        <p>Thirty adaptive items measure you across five cognitive domains, recording not just accuracy but speed and difficulty at every step.</p>
+      </div>
+      <div class="fcard rv">
+        <div class="fnum">2</div>
+        <h3>Get matched to a profile</h3>
+        <p>Your domain pattern and reasoning tempo map to one of eight profiles — a description of your cognitive architecture, not a ranking of your worth.</p>
+      </div>
+      <div class="fcard rv">
+        <div class="fnum">3</div>
+        <h3>Train to your architecture</h3>
+        <p>From there, every retest, exercise, and guide is calibrated to your profile — built around the way your mind measurably operates.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SCIENCE BAND ===== -->
+<section class="alt">
+  <div class="wrap">
+    <div class="science rv">
+      <div class="science-grid">
+        <div>
+          <h2>Grounded in how intelligence is structured</h2>
+          <p>Profiles aren't personality types. They're derived directly from your measured scores across five cognitive domains — the same broad ability factors that decades of psychometric research place at the core of human intelligence.</p>
+          <p>A profile is simply the recognizable <em>pattern</em> those five scores form. We name the patterns so they're memorable; the data underneath is standard cognitive measurement.</p>
+          <p class="ref">Domains drawn from the hierarchical (Cattell–Horn–Carroll) model of cognitive abilities that underpins modern standardized IQ testing.</p>
+        </div>
+        <div class="domain-bars" id="domainBars">
+          <div class="db-title">The five measured domains</div>
+          <div class="db-row"><span>Pattern recognition</span><div class="db-track"><div class="db-fill" data-w="88%"></div></div></div>
+          <div class="db-row"><span>Logical reasoning</span><div class="db-track"><div class="db-fill" data-w="74%"></div></div></div>
+          <div class="db-row"><span>Spatial reasoning</span><div class="db-track"><div class="db-fill" data-w="80%"></div></div></div>
+          <div class="db-row"><span>Working memory</span><div class="db-track"><div class="db-fill" data-w="65%"></div></div></div>
+          <div class="db-row"><span>Processing speed</span><div class="db-track"><div class="db-fill" data-w="83%"></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== HOW WE DETERMINE ===== -->
+<section>
+  <div class="wrap">
+    <div class="sec-head rv">
+      <h2>Two axes, eight profiles</h2>
+      <p>Beneath the five domain scores sit two underlying dimensions. Where you fall on both — plus which domains lead — is what separates one profile from another.</p>
+    </div>
+    <div class="axis-card rv">
+      <div class="axis-row">
+        <div class="axis-label">Reasoning mode</div>
+        <div class="axis-bar"><span>Visual &amp; intuitive<small>pattern · spatial</small></span><span style="text-align:right">Analytical &amp; sequential<small>logic · memory</small></span></div>
+      </div>
+      <div class="axis-row">
+        <div class="axis-label">Reasoning tempo</div>
+        <div class="axis-bar"><span>Fast &amp; instinctive<small>high processing speed</small></span><span style="text-align:right">Deliberate &amp; deep<small>measured, thorough</small></span></div>
+      </div>
+      <p class="axis-foot">Identical overall scores, different coordinates on this map — that's why you might be a <strong>Lighthouse</strong> and your colleague an <strong>Explorer</strong>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== GALLERY ===== -->
+<section class="alt" id="gallery">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <h2>The eight profiles</h2>
+      <p>Every test-taker maps to one. None outranks another — each is a different configuration of strengths, with its own edge and its own blind spot.</p>
+    </div>
+    <div class="pgrid">
+      <div class="pcard rv"><div class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.4"/><circle cx="5" cy="16" r="2.4"/><circle cx="19" cy="16" r="2.4"/><path d="M12 7.4 6.6 14M12 7.4 17.4 14M7 16.5h10"/></svg></div><h3>The Explorer</h3><p class="essence">Even across domains and relentlessly curious — connects ideas others keep separate.</p><span class="sig">Balanced · divergent</span></div>
+      <div class="pcard rv"><div class="glyph"><svg viewBox="0 0 24 24"><path d="M3 8c2.5-2 4.5-2 7 0s4.5 2 7 0M3 13c2.5-2 4.5-2 7 0s4.5 2 7 0M3 18c2.5-2 4.5-2 7 0s4.5 2 7 0"/></svg></div><h3>The River</h3><p class="essence">Fast and intuitive; reads situations instantly and learns by moving through them.</p><span class="sig">Speed · pattern</span></div>
+      <div class="pcard rv"><div class="glyph"><svg viewBox="0 0 24 24"><path d="M12 2v3M9 22h6M10 8h4l1 14H9zM10 8l-1-3h6l-1 3M5 6l2 1M19 6l-2 1"/></svg></div><h3>The Lighthouse</h3><p class="essence">Clear and structured; sees far ahead and turns complexity into something others can follow.</p><span class="sig">Logic · memory</span></div>
+      <div class="pcard rv"><div class="glyph"><svg viewBox="0 0 24 24"><path d="M4 4v16M4 5l9-2 7 2-7 2-9-2M4 11l9-2 7 2-7 2-9-2"/></svg></div><h3>The Strategist</h3><p class="essence">Sees the whole board at once — strong at planning several moves ahead.</p><span class="sig">Pattern · spatial</span></div>
+      <div class="pcard rv"><div class="glyph"><svg viewBox="0 0 24 24"><path d="M3 21h18M6 21V9l6-5 6 5v12M9 21v-5h6v5M9 12h.01M15 12h.01"/></svg></div><h3>The Architect</h3><p class="essence">Builds precise, durable mental structures; methodical and dependable under load.</p><span class="sig">Spatial · logic</span></div>
+      <div class="pcard rv"><div class="glyph"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg></div><h3>The Quicksilver</h3><p class="essence">Mercury-fast reasoning; sharpest under pressure and quickest off the mark.</p><span class="sig">Processing speed</span></div>
+      <div class="pcard rv"><div class="glyph"><svg viewBox="0 0 24 24"><path d="M12 2v6M8 6h8M12 8c-4 0-7 3-7 7a7 7 0 0 0 14 0c0-4-3-7-7-7zM5 15H2M22 15h-3"/></svg></div><h3>The Anchor</h3><p class="essence">Deep and retentive; holds and recalls what everyone else lets slip.</p><span class="sig">Working memory</span></div>
+      <div class="pcard rv"><div class="glyph"><svg viewBox="0 0 24 24"><path d="M12 3 3 19h18zM12 3v16M12 11l6 8M12 11l-6 8"/></svg></div><h3>The Prism</h3><p class="essence">High and balanced across all five; refracts a single problem into many angles.</p><span class="sig">All five, elevated</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== DEEP DIVES ===== -->
+<section>
+  <div class="wrap">
+    <div class="sec-head rv">
+      <h2>Inside a profile</h2>
+      <p>Two examples in full. Each profile translates its measured domain pattern into specific, evidence-based guidance — not vague affirmations.</p>
+    </div>
+
+    <!-- Explorer deep dive -->
+    <div class="dd rv">
+      <div class="dd-head">
+        <div class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.4"/><circle cx="5" cy="16" r="2.4"/><circle cx="19" cy="16" r="2.4"/><path d="M12 7.4 6.6 14M12 7.4 17.4 14M7 16.5h10"/></svg></div>
+        <div>
+          <h3>The Explorer</h3>
+          <div class="essence">Even domain profile · divergent, variety-seeking reasoning</div>
+        </div>
+        <span class="tag">14% of test-takers</span>
+      </div>
+      <div class="dd-sig">
+        <div><div class="dl">Pattern</div><div class="dm"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></div></div>
+        <div><div class="dl">Logic</div><div class="dm"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></div></div>
+        <div><div class="dl">Spatial</div><div class="dm"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></div></div>
+        <div><div class="dl">Memory</div><div class="dm"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div></div>
+        <div><div class="dl">Speed</div><div class="dm"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></div></div>
+      </div>
+      <div class="dd-body">
+        <div class="dd-cell">
+          <h4><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Habit formation</h4>
+          <p>An even profile with no single anchor domain means routines built on rigid repetition tend to lose your interest. The reliable lever is variety within structure: keep the goal fixed, rotate the method. Habit-stacking onto an existing behavior outperforms fixed-time scheduling for this profile.</p>
+        </div>
+        <div class="dd-cell">
+          <h4><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Optimal learning</h4>
+          <p>You retain most when material connects across subjects rather than drilling one in isolation. Interleaved study — alternating between two related topics — suits your profile far better than blocked practice. Project-based formats beat linear courses.</p>
+        </div>
+        <div class="dd-cell">
+          <h4><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>Social dynamics</h4>
+          <p>Your strength is linking other people's interests into a shared idea — genuinely rare and magnetic. The trade-off is finishing one thought before starting the next. A deliberate habit of landing a point fully makes your range read as depth rather than restlessness.</p>
+        </div>
+        <div class="dd-cell">
+          <h4><svg viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.9 4.9l2.9 2.9M16.2 16.2l2.9 2.9M2 12h4M18 12h4"/></svg>Daily execution</h4>
+          <p>Balanced profiles are prone to parallel unfinished work. A single capture system for ideas, plus a one-in-one-out rule on active projects, converts your breadth from a liability into output. Schedule open exploration so it stops leaking into focused time.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- River deep dive -->
+    <div class="dd rv">
+      <div class="dd-head">
+        <div class="glyph"><svg viewBox="0 0 24 24"><path d="M3 8c2.5-2 4.5-2 7 0s4.5 2 7 0M3 13c2.5-2 4.5-2 7 0s4.5 2 7 0M3 18c2.5-2 4.5-2 7 0s4.5 2 7 0"/></svg></div>
+        <div>
+          <h3>The River</h3>
+          <div class="essence">Speed- and pattern-led · intuitive, in-motion reasoning</div>
+        </div>
+        <span class="tag">12% of test-takers</span>
+      </div>
+      <div class="dd-sig">
+        <div><div class="dl">Pattern</div><div class="dm"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></div></div>
+        <div><div class="dl">Logic</div><div class="dm"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div></div>
+        <div><div class="dl">Spatial</div><div class="dm"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></div></div>
+        <div><div class="dl">Memory</div><div class="dm"><span class="dot on"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div></div>
+        <div><div class="dl">Speed</div><div class="dm"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></div></div>
+      </div>
+      <div class="dd-body">
+        <div class="dd-cell">
+          <h4><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Habit formation</h4>
+          <p>High processing speed paired with lower working memory predicts strong starts and early drop-off. Short, high-visibility sprints (think two-week blocks) hold you far better than open-ended resolutions. Build in a fresh variable at each checkpoint so momentum doesn't stall.</p>
+        </div>
+        <div class="dd-cell">
+          <h4><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Optimal learning</h4>
+          <p>To take up reading, your profile does poorly starting with dense, slow text — the mismatch with your pace creates friction you read as boredom. Begin with fast, plot-driven books or audiobooks at slightly increased speed, and bank several quick finishes before attempting a slower work.</p>
+        </div>
+        <div class="dd-cell">
+          <h4><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>Social dynamics</h4>
+          <p>You process and respond quickly — read as charisma, until it outpaces slower thinkers and reads as interrupting. A trained half-second pause before replying is the single highest-return adjustment for this profile in conversation.</p>
+        </div>
+        <div class="dd-cell">
+          <h4><svg viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.9 4.9l2.9 2.9M16.2 16.2l2.9 2.9M2 12h4M18 12h4"/></svg>Daily execution</h4>
+          <p>Speed raises your error rate on detail. A fixed 30-second review on anything that matters before it ships catches most of it. You also do measurably better against a deadline than in open calm — so impose one, even artificially.</p>
+        </div>
+      </div>
+    </div>
+
+    <p style="text-align:center;color:var(--ink-600);font-weight:600;font-size:15px;margin-top:8px">The Lighthouse, Strategist, Architect, Quicksilver, Anchor, and Prism each carry the same depth.</p>
+  </div>
+</section>
+
+<!-- ===== ONGOING VALUE ===== -->
+<section class="alt">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <h2>Your profile drives the whole system</h2>
+      <p>Once your profile is set, BrainSize stops being a one-time test and becomes a program calibrated to your cognitive architecture.</p>
+    </div>
+    <div class="vstrip">
+      <div class="vbox rv">
+        <div class="vic"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+        <h3>Tailored reading</h3>
+        <p>Books and articles matched to how your profile measurably absorbs information.</p>
+      </div>
+      <div class="vbox rv">
+        <div class="vic"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4M15 11h.01M18 13h.01"/></svg></div>
+        <h3>Profile-tuned training</h3>
+        <p>Exercises that target your specific weaker domains, not a generic brain gym.</p>
+      </div>
+      <div class="vbox rv">
+        <div class="vic"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+        <h3>Habit &amp; life guidance</h3>
+        <p>Focus systems, routines, and social strategies written for your profile specifically.</p>
+      </div>
+      <div class="vbox rv">
+        <div class="vic"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></div>
+        <h3>Growth tracking</h3>
+        <p>Watch your domain scores move over time — and see whether your profile shifts as you train.</p>
+      </div>
+    </div>
+    <p style="text-align:center;margin-top:48px;font-size:14px;color:var(--ink-400);font-weight:500;max-width:660px;margin-left:auto;margin-right:auto">IQ Profiles are descriptive summaries of measured cognitive patterns, intended for self-understanding and training — not clinical categories, diagnoses, or fixed limits. Profiles can shift as your scores change.</p>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<div class="wrap" style="max-width:1208px;padding:0">
+  <div class="final-cta rv">
+    <h2>Which one are you?</h2>
+    <p>Take the free assessment, get your profile with your results, and unlock a version of BrainSize calibrated to how your mind works.</p>
+    <a class="btn big white" href="/instructions">Find your profile free</a>
+    <p class="mini">30 questions · ~10 minutes · profile revealed with your results</p>
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <a class="logo" href="/" style="align-self:flex-start"><span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44A2.5 2.5 0 0 1 4 17.5a2.5 2.5 0 0 1-1.96-4A2.5 2.5 0 0 1 2 9.5a2.5 2.5 0 0 1 1.04-4.96A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44A2.5 2.5 0 0 0 20 17.5a2.5 2.5 0 0 0 1.96-4A2.5 2.5 0 0 0 22 9.5a2.5 2.5 0 0 0-1.04-4.96A2.5 2.5 0 0 0 14.5 2Z"/></svg></span>BrainSize</a>
+      <div class="foot-col">
+        <h4>Product</h4>
+        <a href="/instructions">Take the test</a>
+        <a href="/pricing">Pricing</a>
+        <a href="/plus">BrainSize+</a>
+        <a href="/profiles">IQ Profiles</a>
+        <a href="/compare">Compare</a>
+      </div>
+      <div class="foot-col">
+        <h4>Company</h4>
+        <a href="/methodology">Methodology</a>
+        <a href="/about">About</a>
+        <a href="/faq">FAQ</a>
+      </div>
+      <div class="foot-col">
+        <h4>Legal</h4>
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
+        <a href="/refunds">Refund policy</a>
+      </div>
+    </div>
+    <p class="disclaimer">BrainSize provides cognitive assessment estimates for personal insight and entertainment. It is not a clinical diagnostic instrument, and scores should not be used for medical, educational, or employment decisions. IQ Profiles are descriptive tools for self-understanding, not clinical classifications. Individual results vary.</p>
+  </div>
+</footer>
+
+<script>
+  const nav=document.getElementById('nav');
+  addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>8),{passive:true});
+  const reveal=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){
+    e.target.classList.add('in');
+    e.target.querySelectorAll('.db-fill').forEach((b,i)=>setTimeout(()=>b.style.width=b.dataset.w,200+i*120));
+    reveal.unobserve(e.target);
+  }})},{threshold:.2});
+  document.querySelectorAll('.rv').forEach(el=>reveal.observe(el));
+</script>
+</body>
+</html>

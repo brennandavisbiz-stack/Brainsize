@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your assessment | BrainSize</title>
+<meta name="description" content="The BrainSize adaptive cognitive assessment.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --brand-600:#5B3DF5;--brand-700:#4A2FD9;--brand-500:#7A5CFF;--brand-400:#9B85FF;
+    --brand-100:#ECE8FE;--brand-050:#F5F3FF;
+    --ink-900:#111114;--ink-600:#5A5A66;--ink-400:#9A9AA6;
+    --surface:#FFFFFF;--surface-alt:#F7F7F9;--border:#ECECF1;
+    --green:#1D7A3E;--green-bg:#E7F6EC;--amber:#B07D12;--radius:24px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:var(--ink-900);line-height:1.6;-webkit-font-smoothing:antialiased;
+    background:
+      radial-gradient(900px 520px at 50% -8%, #efeafe 0%, transparent 60%),
+      radial-gradient(700px 500px at 100% 110%, #f0ecff 0%, transparent 55%),
+      #FBFAFE;
+    min-height:100vh}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer}
+  .wrap{max-width:760px;margin:0 auto;padding:0 22px}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+  /* top bar */
+  .bar{position:sticky;top:0;z-index:30;backdrop-filter:blur(10px);background:rgba(251,250,254,.78);border-bottom:1px solid transparent}
+  .bar.on{border-color:var(--border)}
+  .bar-in{max-width:760px;margin:0 auto;padding:14px 22px;display:flex;align-items:center;gap:18px}
+  .logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:17px;flex:none}
+  .logo-mark{width:32px;height:32px;border-radius:10px;background:linear-gradient(140deg,#7A5CFF,#5B3DF5);box-shadow:0 4px 12px rgba(91,61,245,.32);display:flex;align-items:center;justify-content:center}
+  .logo-mark svg{width:19px;height:19px}
+  .exit{margin-left:auto;font-size:13.5px;font-weight:600;color:var(--ink-400);flex:none}
+  .exit:hover{color:var(--ink-600)}
+
+  /* calibration signature */
+  .calib{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
+  .calib-top{display:flex;justify-content:space-between;align-items:baseline;font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--ink-400);text-transform:uppercase}
+  .calib-top .q{color:var(--ink-900)}
+  .track{position:relative;height:8px;border-radius:99px;background:#E9E6F4;overflow:visible}
+  .track-fill{position:absolute;left:0;top:0;bottom:0;border-radius:99px;background:linear-gradient(90deg,#9B85FF,#5B3DF5);width:0;transition:width .5s cubic-bezier(.2,.7,.3,1)}
+  .band{position:absolute;top:-3px;bottom:-3px;border-radius:99px;background:rgba(91,61,245,.13);border:1px solid rgba(91,61,245,.22);transition:left .6s cubic-bezier(.2,.7,.3,1),width .6s cubic-bezier(.2,.7,.3,1)}
+  .marker{position:absolute;top:50%;width:14px;height:14px;border-radius:50%;background:#fff;border:3px solid var(--brand-600);transform:translate(-50%,-50%);box-shadow:0 2px 8px rgba(91,61,245,.4);transition:left .6s cubic-bezier(.2,.7,.3,1);z-index:2}
+
+  /* screens */
+  .screen{display:none;animation:fade .45s ease both}
+  .screen.show{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+  /* ready */
+  .ready{text-align:center;padding:64px 22px 80px}
+  .eyebrow{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--brand-600);background:var(--brand-100);padding:7px 15px;border-radius:99px;margin-bottom:22px}
+  .ready h1{font-size:clamp(32px,6vw,46px);font-weight:800;letter-spacing:-.025em;line-height:1.08;margin-bottom:16px}
+  .ready .sub{color:var(--ink-600);font-size:18px;font-weight:500;max-width:480px;margin:0 auto 36px}
+  .rules{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:560px;margin:0 auto 40px;text-align:left}
+  .rule{background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px 16px;box-shadow:0 8px 24px rgba(17,17,20,.04)}
+  .rule .ic{width:34px;height:34px;border-radius:9px;background:var(--brand-050);display:flex;align-items:center;justify-content:center;margin-bottom:11px}
+  .rule .ic svg{width:18px;height:18px;stroke:var(--brand-600);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .rule h4{font-size:14.5px;font-weight:800;margin-bottom:3px}
+  .rule p{font-size:13px;color:var(--ink-600);font-weight:500;line-height:1.45}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;background:var(--brand-600);color:#fff;font-weight:700;border:none;border-radius:99px;padding:16px 40px;font-size:17px;transition:background .15s,transform .15s,box-shadow .15s;box-shadow:0 10px 26px rgba(91,61,245,.32)}
+  .btn:hover{background:var(--brand-700);transform:translateY(-2px)}
+  .btn:active{transform:translateY(0)}
+  .btn.ghost{background:#fff;color:var(--brand-600);border:1.5px solid #d8d0fb;box-shadow:none}
+  .btn.ghost:hover{background:var(--brand-050)}
+  .btn.lg{padding:18px 46px;font-size:18px}
+  .btn:disabled{opacity:.5;cursor:default;transform:none}
+  .ready .note{margin-top:18px;font-size:13px;color:var(--ink-400);font-weight:600}
+
+  /* quiz */
+  .quiz{padding:30px 22px 70px}
+  .q-kind{text-align:center;font-size:12.5px;font-weight:700;letter-spacing:.04em;color:var(--ink-400);text-transform:uppercase;margin-bottom:6px}
+  .q-prompt{text-align:center;font-size:21px;font-weight:800;letter-spacing:-.015em;margin-bottom:26px;color:var(--ink-900)}
+  .figure{display:flex;justify-content:center;margin:0 auto 30px}
+  .figwrap{animation:swap .42s ease both}
+  @keyframes swap{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:none}}
+
+  /* matrix / sequence figures */
+  .mtx{display:grid;gap:8px;background:#E9E6F4;padding:8px;border-radius:18px}
+  .cell{background:#fff;border-radius:11px;width:var(--cs);height:var(--cs);display:flex;align-items:center;justify-content:center}
+  .cell.q{background:var(--brand-050);border:2px dashed #c4b8f7}
+  .cell svg{width:80%;height:80%;display:block}
+  .qmark{font-size:30px;font-weight:800;color:var(--brand-400)}
+  .seq{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center}
+  .seq .arrowi{color:var(--ink-400);font-size:18px;font-weight:700}
+  .ana{display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:center}
+  .ana .rel{color:var(--ink-400);font-weight:800;font-size:18px;padding:0 2px}
+
+  /* options */
+  .opts{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;max-width:420px;margin:0 auto}
+  .opts.row{grid-template-columns:repeat(4,1fr);max-width:520px}
+  .opts.five{grid-template-columns:repeat(5,1fr);max-width:560px}
+  .opt{position:relative;background:#fff;border:2px solid var(--border);border-radius:16px;padding:14px;display:flex;align-items:center;justify-content:center;aspect-ratio:1;transition:border-color .15s,transform .12s,box-shadow .15s}
+  .opt:hover{border-color:#c4b8f7;transform:translateY(-2px);box-shadow:0 10px 24px rgba(91,61,245,.12)}
+  .opt svg{width:78%;height:78%;display:block;pointer-events:none}
+  .opt .key{position:absolute;top:8px;left:10px;font-size:12px;font-weight:800;color:var(--ink-400)}
+  .opt.sel{border-color:var(--brand-600);background:var(--brand-050);box-shadow:0 0 0 4px rgba(91,61,245,.14)}
+  .opt.sel .key{color:var(--brand-600)}
+  .opt.lock{pointer-events:none}
+  .q-foot{text-align:center;margin-top:26px;font-size:13px;color:var(--ink-400);font-weight:600}
+
+  /* analyzing */
+  .analyzing{text-align:center;padding:120px 22px}
+  .spinner{width:64px;height:64px;margin:0 auto 30px;position:relative}
+  .spinner svg{width:100%;height:100%;animation:spin 1.4s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .analyzing h2{font-size:24px;font-weight:800;letter-spacing:-.02em;margin-bottom:24px}
+  .alog{max-width:340px;margin:0 auto;text-align:left;display:flex;flex-direction:column;gap:11px}
+  .aline{display:flex;align-items:center;gap:11px;font-size:15px;font-weight:600;color:var(--ink-400);opacity:.4;transition:opacity .3s,color .3s}
+  .aline.done{opacity:1;color:var(--ink-900)}
+  .aline .dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex:none;display:flex;align-items:center;justify-content:center}
+  .aline.done .dot{background:var(--brand-600);border-color:var(--brand-600)}
+  .aline .dot svg{width:11px;height:11px;stroke:#fff;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;opacity:0}
+  .aline.done .dot svg{opacity:1}
+
+  /* results */
+  .results{padding:34px 22px 90px}
+  .r-top{text-align:center;margin-bottom:34px}
+  .r-badge{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:var(--green);background:var(--green-bg);padding:7px 15px;border-radius:99px;margin-bottom:16px}
+  .r-badge svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+  .r-top h1{font-size:clamp(28px,5vw,38px);font-weight:800;letter-spacing:-.025em;margin-bottom:8px}
+  .r-top p{color:var(--ink-600);font-size:16.5px;font-weight:500}
+
+  .range-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:34px 30px;text-align:center;box-shadow:0 18px 50px rgba(17,17,20,.07);margin-bottom:18px}
+  .range-card .lbl{font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-400);margin-bottom:8px}
+  .range-card .val{font-size:clamp(46px,11vw,68px);font-weight:800;letter-spacing:-.03em;line-height:1;background:linear-gradient(120deg,#5B3DF5,#9B85FF);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .range-card .cap{font-size:14px;color:var(--ink-600);font-weight:600;margin-top:12px}
+  .rbar{max-width:380px;margin:20px auto 0;height:10px;border-radius:99px;background:#EeEbF7;position:relative;overflow:hidden}
+  .rbar-fill{position:absolute;top:0;bottom:0;border-radius:99px;background:linear-gradient(90deg,#9B85FF,#5B3DF5);opacity:.9}
+  .rscale{max-width:380px;margin:7px auto 0;display:flex;justify-content:space-between;font-size:11px;font-weight:600;color:var(--ink-400)}
+
+  /* profile card */
+  .profile-card{position:relative;overflow:hidden;background:linear-gradient(150deg,#16121f,#241a3d);color:#fff;border-radius:var(--radius);padding:34px 30px;margin-bottom:18px;box-shadow:0 22px 60px rgba(36,26,61,.4)}
+  .profile-card::before{content:"";position:absolute;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,#7A5CFF,transparent 70%);opacity:.4;top:-160px;right:-90px}
+  .profile-card>*{position:relative}
+  .pc-ey{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#C9BCFF;margin-bottom:14px}
+  .pc-head{display:flex;align-items:center;gap:16px;margin-bottom:14px}
+  .pc-ic{width:58px;height:58px;border-radius:16px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;flex:none}
+  .pc-ic svg{width:32px;height:32px;stroke:#fff;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  .pc-name{font-size:clamp(26px,5vw,34px);font-weight:800;letter-spacing:-.02em;line-height:1.05}
+  .pc-tag{font-size:13.5px;font-weight:600;color:#C9BCFF;margin-top:3px}
+  .pc-desc{font-size:15.5px;color:rgba(255,255,255,.82);font-weight:500;margin-bottom:20px}
+  .pc-sig{display:flex;flex-direction:column;gap:9px}
+  .sig-row{display:flex;align-items:center;gap:12px}
+  .sig-row .nm{width:130px;font-size:12.5px;font-weight:600;color:rgba(255,255,255,.7);flex:none}
+  .sig-bar{flex:1;height:8px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden}
+  .sig-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#9B85FF,#fff);width:0;transition:width 1s cubic-bezier(.2,.7,.3,1)}
+  .sig-row.key .nm{color:#fff;font-weight:800}
+  .sig-row.key .sig-bar i{background:linear-gradient(90deg,#C9BCFF,#fff)}
+
+  /* locked report */
+  .locked{position:relative;background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:0 18px 50px rgba(17,17,20,.07)}
+  .lk-body{padding:30px;transition:filter .5s}
+  .lk-body.blur{filter:blur(7px);pointer-events:none;user-select:none}
+  .lk-h{font-size:13px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-400);margin:0 0 18px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
+  .stat{background:var(--surface-alt);border-radius:14px;padding:18px}
+  .stat .k{font-size:12px;font-weight:700;color:var(--ink-400);text-transform:uppercase;letter-spacing:.04em}
+  .stat .v{font-size:30px;font-weight:800;letter-spacing:-.02em;margin-top:3px}
+  .stat .s{font-size:12.5px;color:var(--ink-600);font-weight:600}
+  .dom{display:flex;flex-direction:column;gap:13px;margin-bottom:22px}
+  .dom-row{display:flex;align-items:center;gap:13px}
+  .dom-row .nm{width:140px;font-size:13.5px;font-weight:700;flex:none}
+  .dom-bar{flex:1;height:9px;border-radius:99px;background:#EeEbF7;overflow:hidden}
+  .dom-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#9B85FF,#5B3DF5)}
+  .dom-row .num{width:36px;text-align:right;font-size:13.5px;font-weight:800;flex:none}
+  .analytics{background:var(--surface-alt);border-radius:14px;padding:20px;margin-bottom:6px}
+  .analytics h5{font-size:13px;font-weight:800;margin-bottom:14px}
+  .acc{display:flex;gap:10px}
+  .acc-col{flex:1;text-align:center}
+  .acc-col .bar{height:80px;display:flex;align-items:flex-end;justify-content:center}
+  .acc-col .bar i{width:30px;border-radius:7px 7px 0 0;background:linear-gradient(180deg,#9B85FF,#5B3DF5);transition:height .8s}
+  .acc-col .pct{font-size:14px;font-weight:800;margin-top:7px}
+  .acc-col .cl{font-size:11.5px;color:var(--ink-400);font-weight:600}
+
+  /* paywall overlay */
+  .paywall{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:24px;background:linear-gradient(180deg,rgba(251,250,254,.4) 0%,rgba(251,250,254,.92) 38%,rgba(251,250,254,.98) 100%)}
+  .pw-card{max-width:380px;width:100%;background:#fff;border:1px solid var(--border);border-radius:20px;padding:28px;text-align:center;box-shadow:0 30px 70px rgba(17,17,20,.16)}
+  .pw-lock{width:46px;height:46px;border-radius:13px;background:var(--brand-050);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+  .pw-lock svg{width:24px;height:24px;stroke:var(--brand-600);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .pw-card h3{font-size:21px;font-weight:800;letter-spacing:-.02em;margin-bottom:6px}
+  .pw-card .psub{font-size:14px;color:var(--ink-600);font-weight:500;margin-bottom:18px}
+  .pw-list{text-align:left;display:flex;flex-direction:column;gap:9px;margin-bottom:22px}
+  .pw-list li{display:flex;gap:9px;font-size:14px;font-weight:600;color:var(--ink-900);align-items:flex-start;list-style:none}
+  .pw-list li svg{width:17px;height:17px;stroke:var(--brand-600);fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;flex:none;margin-top:2px}
+  .pw-price{font-size:14px;font-weight:600;color:var(--ink-600);margin-top:14px}
+  .pw-price b{color:var(--ink-900)}
+  .pw-guar{font-size:12px;color:var(--ink-400);font-weight:600;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:6px}
+  .pw-guar svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.2}
+
+  /* unlocked extras */
+  .share{display:none;margin-top:18px;background:linear-gradient(135deg,#5B3DF5,#7A5CFF);border-radius:var(--radius);padding:28px;color:#fff;text-align:center}
+  .share.show{display:block}
+  .share h3{font-size:20px;font-weight:800;margin-bottom:6px}
+  .share p{font-size:14px;opacity:.86;font-weight:500;margin-bottom:18px}
+  .r-actions{display:none;gap:12px;justify-content:center;margin-top:26px;flex-wrap:wrap}
+  .r-actions.show{display:flex}
+
+  /* modal */
+  .modal-bg{position:fixed;inset:0;background:rgba(17,17,20,.5);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:20px;z-index:60}
+  .modal-bg.show{display:flex;animation:fade .25s ease both}
+  .modal{background:#fff;border-radius:22px;max-width:400px;width:100%;padding:28px;box-shadow:0 30px 80px rgba(0,0,0,.3)}
+  .modal h3{font-size:20px;font-weight:800;letter-spacing:-.02em;margin-bottom:4px}
+  .modal .msub{font-size:13.5px;color:var(--ink-600);font-weight:500;margin-bottom:20px}
+  .field{margin-bottom:13px}
+  .field label{display:block;font-size:12px;font-weight:700;color:var(--ink-600);margin-bottom:6px}
+  .field input{width:100%;border:1.5px solid var(--border);border-radius:11px;padding:12px 14px;font-size:15px;font-family:inherit;background:var(--surface-alt)}
+  .field input:focus{outline:none;border-color:var(--brand-400);background:#fff}
+  .frow{display:flex;gap:11px}
+  .demo-tag{font-size:11.5px;font-weight:700;color:var(--amber);background:#FBEFD3;padding:5px 11px;border-radius:99px;display:inline-block;margin-bottom:16px}
+  .modal .pay{width:100%;margin-top:8px}
+  .modal .cancel{display:block;width:100%;text-align:center;margin-top:12px;font-size:13.5px;font-weight:600;color:var(--ink-400);background:none;border:none;padding:8px}
+  .processing{text-align:center;padding:30px 0}
+  .processing .spinner{width:46px;height:46px;margin-bottom:18px}
+  .processing p{font-size:15px;font-weight:600;color:var(--ink-600)}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink-900);color:#fff;padding:13px 22px;border-radius:99px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:.3s;z-index:70}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  @media (max-width:560px){
+    .rules{grid-template-columns:1fr}
+    .grid2{grid-template-columns:1fr}
+    .sig-row .nm,.dom-row .nm{width:108px}
+    .opts.row{grid-template-columns:repeat(4,1fr);gap:8px}
+    .opts.five{gap:6px}
+    .opts.five .opt{padding:8px}
+  }
+</style>
+</head>
+<body>
+
+<div class="bar" id="bar">
+  <div class="bar-in">
+    <a class="logo" href="/"><span class="logo-mark"><svg viewBox="0 0 36 36" fill="none"><path d="M18 9.5 11.5 14.5M18 9.5 24.5 14.5M11.5 14.5 18 19M24.5 14.5 18 19M18 19 12.5 23.5M18 19 23.5 23.5M11.5 14.5 12.5 23.5M24.5 14.5 23.5 23.5" stroke="#fff" stroke-opacity=".5" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="9.5" r="2.2" fill="#fff"/><circle cx="11.5" cy="14.5" r="1.9" fill="#fff"/><circle cx="24.5" cy="14.5" r="1.9" fill="#fff"/><circle cx="12.5" cy="23.5" r="1.9" fill="#fff"/><circle cx="23.5" cy="23.5" r="1.9" fill="#fff"/><circle cx="18" cy="19" r="3" fill="#fff"/><circle cx="18" cy="19" r="1.3" fill="#5B3DF5"/></svg></span>BrainSize</a>
+
+    <div class="calib" id="calib" style="display:none">
+      <div class="calib-top"><span>Calibrating your level</span><span class="q"><span id="qnow">1</span> / <span id="qtot">18</span></span></div>
+      <div class="track">
+        <div class="band" id="band"></div>
+        <div class="track-fill" id="precision"></div>
+        <div class="marker" id="marker"></div>
+      </div>
+    </div>
+    <a class="exit" href="/" id="exit">Exit</a>
+  </div>
+</div>
+
+<!-- READY -->
+<section class="screen show" id="s-ready">
+  <div class="wrap ready">
+    <span class="eyebrow">Adaptive assessment</span>
+    <h1>Ready when you are</h1>
+    <p class="sub">Eighteen visual puzzles that adjust to you in real time. No reading, no trivia, just patterns.</p>
+    <div class="rules">
+      <div class="rule">
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+        <h4>One way forward</h4>
+        <p>You can't go back. Trust your first read and keep moving.</p>
+      </div>
+      <div class="rule">
+        <div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+        <h4>Speed counts</h4>
+        <p>How fast you solve each item is part of your score. Don't stall.</p>
+      </div>
+      <div class="rule">
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9"/><path d="M3 12V7M3 12h5"/></svg></div>
+        <h4>It adapts</h4>
+        <p>Get one right and the next gets harder. The test finds your level.</p>
+      </div>
+    </div>
+    <button class="btn lg" id="begin">Begin assessment</button>
+    <p class="note">About 6 minutes &middot; Press <b>Enter</b> to begin</p>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section class="screen" id="s-quiz">
+  <div class="wrap quiz">
+    <div class="q-kind" id="qkind">Pattern</div>
+    <div class="q-prompt" id="qprompt">Which figure completes the pattern?</div>
+    <div class="figure" id="qfig"></div>
+    <div class="opts" id="qopts"></div>
+    <p class="q-foot">Tap an answer, or use keys <b>1</b>–<b>4</b></p>
+  </div>
+</section>
+
+<!-- ANALYZING -->
+<section class="screen" id="s-analyzing">
+  <div class="wrap analyzing">
+    <div class="spinner"><svg viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="none" stroke="#ECE8FE" stroke-width="5"/><path d="M25 5 a20 20 0 0 1 20 20" fill="none" stroke="#5B3DF5" stroke-width="5" stroke-linecap="round"/></svg></div>
+    <h2>Building your profile</h2>
+    <div class="alog" id="alog"></div>
+  </div>
+</section>
+
+<!-- RESULTS -->
+<section class="screen" id="s-results">
+  <div class="wrap results">
+    <div class="r-top">
+      <span class="r-badge"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Assessment complete</span>
+      <h1>Here's how your mind works</h1>
+      <p>Your profile and range are below. Unlock the full report for the rest.</p>
+    </div>
+
+    <div class="range-card">
+      <div class="lbl">Estimated IQ range</div>
+      <div class="val" id="rangeVal">--</div>
+      <div class="cap" id="rangeCap">90% confidence interval</div>
+      <div class="rbar"><div class="rbar-fill" id="rbarFill"></div></div>
+      <div class="rscale"><span>70</span><span>100</span><span>130</span></div>
+    </div>
+
+    <div class="profile-card" id="profileCard">
+      <div class="pc-ey">Your IQ Profile</div>
+      <div class="pc-head">
+        <div class="pc-ic" id="pcIc"></div>
+        <div>
+          <div class="pc-name" id="pcName">--</div>
+          <div class="pc-tag" id="pcTag">--</div>
+        </div>
+      </div>
+      <p class="pc-desc" id="pcDesc">--</p>
+      <div class="pc-sig" id="pcSig"></div>
+    </div>
+
+    <div class="locked">
+      <div class="lk-body blur" id="lkBody">
+        <p class="lk-h">Your full report</p>
+        <div class="grid2">
+          <div class="stat"><div class="k">IQ score</div><div class="v" id="stScore">123</div><div class="s" id="stScoreS">point estimate</div></div>
+          <div class="stat"><div class="k">Percentile</div><div class="v" id="stPct">94th</div><div class="s" id="stPctS">higher than most</div></div>
+        </div>
+        <p class="lk-h">Five cognitive domains</p>
+        <div class="dom" id="domWrap"></div>
+        <div class="analytics">
+          <h5>Accuracy by difficulty</h5>
+          <div class="acc" id="accWrap"></div>
+        </div>
+      </div>
+      <div class="paywall" id="paywall">
+        <div class="pw-card">
+          <div class="pw-lock"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+          <h3>Unlock your full report</h3>
+          <p class="psub">You've seen your profile and range. Here's everything else.</p>
+          <ul class="pw-list">
+            <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Your exact IQ score and percentile</li>
+            <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Full breakdown across five domains</li>
+            <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Speed and accuracy analytics</li>
+            <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>A shareable score card</li>
+          </ul>
+          <button class="btn" style="width:100%" id="unlockBtn">Unlock for $3.99</button>
+          <p class="pw-price">One-time payment &middot; <b>no subscription</b></p>
+          <p class="pw-guar"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3l7 4v5c0 4-3 7-7 9-4-2-7-5-7-9V7z" stroke-linejoin="round"/></svg>7-day money-back guarantee</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="share" id="shareCard">
+      <h3>Share your result</h3>
+      <p>A clean card with your profile and score, ready to post.</p>
+      <button class="btn ghost" id="dlCard" style="background:#fff">Download score card</button>
+    </div>
+
+    <div class="r-actions" id="rActions">
+      <a class="btn ghost" href="/profiles">Explore all profiles</a>
+      <a class="btn" href="/plus">Keep training with BrainSize+</a>
+    </div>
+  </div>
+</section>
+
+<!-- CHECKOUT MODAL -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal" id="modal">
+    <div id="checkoutForm">
+      <span class="demo-tag">Prototype &middot; no real charge</span>
+      <h3>Complete your unlock</h3>
+      <p class="msub">Your full BrainSize report, one-time.</p>
+      <div class="field"><label>Email</label><input type="email" id="ckEmail" placeholder="you@example.com" value="you@example.com"></div>
+      <div class="field"><label>Card number</label><input id="ckCard" placeholder="4242 4242 4242 4242" value="4242 4242 4242 4242"></div>
+      <div class="frow">
+        <div class="field" style="flex:1"><label>Expiry</label><input id="ckExp" placeholder="MM / YY" value="12 / 28"></div>
+        <div class="field" style="flex:1"><label>CVC</label><input id="ckCvc" placeholder="123" value="123"></div>
+      </div>
+      <button class="btn pay" id="payBtn">Pay $3.99</button>
+      <button class="cancel" id="ckCancel">Maybe later</button>
+    </div>
+    <div id="checkoutProc" style="display:none">
+      <div class="processing">
+        <div class="spinner"><svg viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="none" stroke="#ECE8FE" stroke-width="5"/><path d="M25 5 a20 20 0 0 1 20 20" fill="none" stroke="#5B3DF5" stroke-width="5" stroke-linecap="round"/></svg></div>
+        <p>Processing payment...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+/* ============================================================
+   BrainSize adaptive assessment — front-end prototype
+   Puzzle generators -> adaptive engine -> scoring -> profile
+   ============================================================ */
+
+const $ = s => document.querySelector(s);
+const rnd = (a,b)=> a + Math.floor(Math.random()*(b-a+1));
+const pick = arr => arr[Math.floor(Math.random()*arr.length)];
+const shuffle = a => { a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
+
+/* ---------- SVG shape helpers (viewBox 0 0 100 100) ---------- */
+const C='#1b1b22', ACC='#5B3DF5';
+function svg(inner, vb='0 0 100 100'){return `<svg viewBox="${vb}" xmlns="http://www.w3.org/2000/svg">${inner}</svg>`;}
+function ngon(n,cx,cy,r,rot=-90){let p=[];for(let i=0;i<n;i++){const a=(rot+i*360/n)*Math.PI/180;p.push((cx+r*Math.cos(a)).toFixed(1)+','+(cy+r*Math.sin(a)).toFixed(1));}return p.join(' ');}
+function gWrap(inner,rot=0,mirror=false){
+  let t=[]; if(mirror) t.push('translate(100,0) scale(-1,1)'); if(rot) t.push(`rotate(${rot} 50 50)`);
+  return t.length?`<g transform="${t.join(' ')}">${inner}</g>`:inner;
+}
+// asymmetric base shapes, drawn in canonical orientation
+const SHAPES = {
+  flag: `<line x1="34" y1="22" x2="34" y2="78" stroke="${C}" stroke-width="5" stroke-linecap="round"/><path d="M34 24 L66 33 L34 46 Z" fill="${C}"/>`,
+  arrow:`<line x1="26" y1="50" x2="68" y2="50" stroke="${C}" stroke-width="5" stroke-linecap="round"/><polyline points="54,36 70,50 54,64" fill="none" stroke="${C}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>`,
+  ell:  `<polyline points="38,24 38,74 70,74" fill="none" stroke="${C}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>`,
+  key:  `<circle cx="40" cy="40" r="13" fill="none" stroke="${C}" stroke-width="5"/><line x1="49" y1="49" x2="72" y2="72" stroke="${C}" stroke-width="5" stroke-linecap="round"/><line x1="64" y1="72" x2="72" y2="64" stroke="${C}" stroke-width="5" stroke-linecap="round"/>`,
+};
+function shape(name,rot=0,mirror=false){return svg(gWrap(SHAPES[name],rot,mirror));}
+
+// dots layout for counts 1..9
+const DOTLAYOUT = {
+ 1:[[50,50]],2:[[35,50],[65,50]],3:[[28,50],[50,50],[72,50]],
+ 4:[[34,34],[66,34],[34,66],[66,66]],5:[[34,34],[66,34],[50,50],[34,66],[66,66]],
+ 6:[[32,36],[50,36],[68,36],[32,64],[50,64],[68,64]],
+ 7:[[32,32],[50,32],[68,32],[50,50],[32,68],[50,68],[68,68]],
+ 8:[[32,32],[50,32],[68,32],[32,50],[68,50],[32,68],[50,68],[68,68]],
+ 9:[[32,32],[50,32],[68,32],[32,50],[50,50],[68,50],[32,68],[50,68],[68,68]],
+};
+function dots(n,fill=ACC){return svg(DOTLAYOUT[n].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="7" fill="${fill}"/>`).join(''));}
+
+// mini grid for superposition; cells = list of indices filled; g = grid dim
+function miniGrid(set,g){
+  const pad=18,size=(100-pad*2)/g, r=[];
+  for(let i=0;i<g*g;i++){const cx=pad+(i%g)*size, cy=pad+Math.floor(i/g)*size;
+    const on=set.includes(i);
+    r.push(`<rect x="${cx+2}" y="${cy+2}" width="${size-4}" height="${size-4}" rx="3" fill="${on?ACC:'none'}" stroke="${on?ACC:'#d7d4e0'}" stroke-width="2"/>`);
+  }
+  return svg(r.join(''));
+}
+function polyShape(n,rot=-90,fill=false){const pts=ngon(n,50,52,30,rot);return svg(`<polygon points="${pts}" fill="${fill?ACC:'none'}" stroke="${ACC}" stroke-width="5" stroke-linejoin="round"/>`);}
+function polyDot(n,dot=false){const pts=ngon(n,50,52,30,-90);return svg(`<polygon points="${pts}" fill="none" stroke="${C}" stroke-width="5" stroke-linejoin="round"/>`+(dot?`<circle cx="50" cy="52" r="7" fill="${ACC}"/>`:''));}
+
+/* ---------- difficulty -> ~IQ scale ---------- */
+const J=()=>rnd(-5,5);
+
+/* ---------- generators: each returns {kind,prompt,fig,opts,answer,domain,difficulty} ---------- */
+function genRotation(){
+  const name=pick(['flag','arrow','ell','key']);
+  const steps=pick([[90,90],[90,45],[45,90],[45,45]]);
+  const [rowStep,colStep]=steps;
+  const ang=(r,c)=>((r*rowStep+c*colStep)%360+360)%360;
+  const cells=[];
+  for(let r=0;r<3;r++)for(let c=0;c<3;c++){
+    if(r===2&&c===2){cells.push({q:true});continue;}
+    cells.push({svg:shape(name,ang(r,c))});
+  }
+  const correct=ang(2,2);
+  const distA=((correct-colStep)%360+360)%360;
+  const distB=((correct+colStep)%360+360)%360;
+  let opts=[{svg:shape(name,correct),ok:true},{svg:shape(name,distA)},{svg:shape(name,distB)},{svg:shape(name,correct,true)}];
+  // ensure distinct angles among non-mirror
+  opts=dedupe(opts);
+  const hard=(rowStep===45||colStep===45);
+  return finalize('matrix','Spatial','Which figure completes the grid?',matrixFig(cells,3),opts,
+    ['spatial','pattern'], 96+(hard?20:0)+(rowStep!==0?5:0)+J());
+}
+
+function genCount(){
+  const d=pick([1,2]); const base=rnd(1,3);
+  const val=(r,c)=>base+r+c*d;
+  const maxv=val(2,2); if(maxv>9) return genCount();
+  const cells=[];
+  for(let r=0;r<3;r++)for(let c=0;c<3;c++){
+    if(r===2&&c===2){cells.push({q:true});continue;}
+    cells.push({svg:dots(val(r,c))});
+  }
+  const correct=val(2,2);
+  let cand=[correct,correct-1,correct+1,val(2,1)].filter(v=>v>=1&&v<=9);
+  cand=Array.from(new Set(cand)); while(cand.length<4){const v=rnd(1,9); if(!cand.includes(v))cand.push(v);}
+  cand=cand.slice(0,4); if(!cand.includes(correct))cand[0]=correct;
+  const opts=cand.map(v=>({svg:dots(v),ok:v===correct}));
+  return finalize('matrix','Pattern','How many complete the grid?',matrixFig(cells,3),opts,
+    ['pattern','logic'], 90+(d===2?14:0)+(maxv>6?6:0)+J());
+}
+
+function genSuper(){
+  const g=pick([2,2,3]); const N=g*g;
+  const rndSet=()=>{const k=rnd(1,N-1);return shuffle([...Array(N).keys()]).slice(0,k).sort((a,b)=>a-b);};
+  const rows=[];
+  for(let r=0;r<3;r++){
+    let A,B,U,tries=0;
+    do{A=rndSet();B=rndSet();U=Array.from(new Set([...A,...B])).sort((a,b)=>a-b);tries++;}
+    while((eqSet(A,B)||eqSet(U,A)||eqSet(U,B)||U.length===N)&&tries<40);
+    rows.push({A,B,U});
+  }
+  const cells=[];
+  for(let r=0;r<3;r++){
+    cells.push({svg:miniGrid(rows[r].A,g)});
+    cells.push({svg:miniGrid(rows[r].B,g)});
+    if(r===2)cells.push({q:true}); else cells.push({svg:miniGrid(rows[r].U,g)});
+  }
+  const {A,B,U}=rows[2];
+  const inter=A.filter(x=>B.includes(x)).sort((a,b)=>a-b);
+  const xor=Array.from(new Set([...A,...B])).filter(x=>!(A.includes(x)&&B.includes(x))).sort((a,b)=>a-b);
+  let opts=[{set:U,ok:true},{set:inter},{set:xor},{set:A}];
+  opts=opts.filter((o,i)=>i===0||!eqSet(o.set,U)); // drop dup-of-correct distractors
+  while(opts.length<4){const s=shuffle([...Array(N).keys()]).slice(0,rnd(1,N-1)).sort((a,b)=>a-b); if(!opts.some(o=>eqSet(o.set,s)))opts.push({set:s});}
+  opts=opts.slice(0,4).map(o=>({svg:miniGrid(o.set,g),ok:!!o.ok}));
+  return finalize('matrix','Logic','The third cell combines the first two. Which completes the bottom row?',matrixFig(cells,3),opts,
+    ['logic','memory'], 104+(g===3?20:0)+J());
+}
+
+function genSequence(){
+  const inc=pick([1,2]); const s0=rnd(3,Math.max(3,7-2*inc));
+  const seq=[s0,s0+inc,s0+2*inc]; const ans=s0+3*inc;
+  const fig=seqFig(seq.map(n=>polyShape(n)));
+  let cand=[ans,ans-1,ans+1,ans-inc].filter(v=>v>=3&&v<=10);
+  cand=Array.from(new Set(cand)); while(cand.length<4){const v=rnd(3,10);if(!cand.includes(v))cand.push(v);}
+  cand=cand.slice(0,4); if(!cand.includes(ans))cand[0]=ans;
+  const opts=cand.map(v=>({svg:polyShape(v),ok:v===ans}));
+  return finalize('sequence','Pattern','What comes next in the sequence?',fig,opts,
+    ['pattern','logic'], 84+(inc===2?12:0)+J());
+}
+
+function ensureFour(opts,makeExtra){
+  const out=[],seen=new Set();
+  const correct=opts.find(o=>o.ok); seen.add(correct.svg); out.push(correct);
+  for(const o of opts){ if(o.ok||seen.has(o.svg))continue; seen.add(o.svg); out.push(o); if(out.length>=4)break; }
+  let g=0; while(out.length<4&&g++<60){const e=makeExtra(); if(!seen.has(e)){seen.add(e);out.push({svg:e});}}
+  return out.slice(0,4);
+}
+function genAnalogy(){
+  const t=pick(['rot','sides','dot','fill']);
+  const names=['flag','arrow','ell','key'];
+  let fig,opts,dom,diff;
+  if(t==='rot'){
+    const name=pick(names); const t0=pick([45,90,135]); const a0=pick([0,90]); const a2=pick([0,45,180]);
+    const A=shape(name,a0),B=shape(name,(a0+t0)%360),Cc=shape(name,a2); const corr=(a2+t0)%360;
+    let angs=[a2,(a2-t0+360)%360,(a2+2*t0)%360,(a2+t0+180)%360].filter(a=>a!==corr);
+    angs=Array.from(new Set(angs)).slice(0,3);
+    opts=ensureFour([{svg:shape(name,corr),ok:true},...angs.map(a=>({svg:shape(name,a)}))],()=>shape(name,rnd(0,7)*45));
+    fig=anaFig(A,B,Cc); dom=['spatial','logic']; diff=100+(t0!==90?14:6)+J();
+  } else if(t==='sides'){
+    const n=rnd(3,5),m=rnd(3,5); const corr=m+1;
+    const A=polyShape(n),B=polyShape(n+1),Cc=polyShape(m);
+    let sd=[m,m+2,m-1,m+3].filter(x=>x>=3&&x<=10&&x!==corr); sd=Array.from(new Set(sd)).slice(0,3);
+    opts=ensureFour([{svg:polyShape(corr),ok:true},...sd.map(x=>({svg:polyShape(x)}))],()=>polyShape(rnd(3,10)));
+    fig=anaFig(A,B,Cc); dom=['pattern','logic']; diff=92+J();
+  } else if(t==='dot'){
+    const n=rnd(3,6),m=rnd(3,6); const d2=(m-1>=3)?m-1:m+2;
+    const A=polyDot(n,false),B=polyDot(n,true),Cc=polyDot(m,false);
+    opts=ensureFour([{svg:polyDot(m,true),ok:true},{svg:polyDot(m,false)},{svg:polyDot(m+1,true)},{svg:polyDot(d2,true)}],()=>polyDot(rnd(3,8),Math.random()<.5));
+    fig=anaFig(A,B,Cc); dom=['pattern','logic']; diff=98+J();
+  } else {
+    const n=rnd(3,6),m=rnd(3,6); const d2=(m-1>=3)?m-1:m+2;
+    const A=polyShape(n,-90,false),B=polyShape(n,-90,true),Cc=polyShape(m,-90,false);
+    opts=ensureFour([{svg:polyShape(m,-90,true),ok:true},{svg:polyShape(m,-90,false)},{svg:polyShape(m+1,-90,true)},{svg:polyShape(d2,-90,false)}],()=>polyShape(rnd(3,8),-90,Math.random()<.5));
+    fig=anaFig(A,B,Cc); dom=['logic','pattern']; diff=96+J();
+  }
+  return finalize('analogy','Analogy','A is to B as C is to ?',fig,opts,dom,diff);
+}
+
+function genOdd(){
+  const fam=pick(['mirror','parity','count']);
+  let tiles=[], answer=0;
+  for(let attempt=0;attempt<10;attempt++){
+    if(fam==='mirror'){
+      const name=pick(['flag','arrow','ell','key']); const angs=shuffle([0,90,180,270]);
+      tiles=angs.map(a=>shape(name,a)); answer=rnd(0,4);
+      tiles.splice(answer,0,shape(name,pick([45,135,225]),true)); tiles=tiles.slice(0,5);
+    } else if(fam==='parity'){
+      const baseEven=Math.random()<0.5; const pool=baseEven?[4,6,8]:[3,5,7], other=baseEven?[3,5,7]:[4,6,8];
+      tiles=Array.from({length:4},()=>polyShape(pick(pool)));
+      answer=rnd(0,4); tiles.splice(answer,0,polyShape(pick(other))); tiles=tiles.slice(0,5);
+    } else {
+      const k=rnd(2,5); tiles=Array.from({length:4},()=>dots(k));
+      let kk; do{kk=rnd(2,6);}while(kk===k);
+      answer=rnd(0,4); tiles.splice(answer,0,dots(kk)); tiles=tiles.slice(0,5);
+    }
+    const odd=tiles[answer];
+    if(tiles.every((t,i)=>i===answer||t!==odd)) break; // odd must differ from every conforming tile
+  }
+  const opts=tiles.map((s,i)=>({svg:s,ok:i===answer}));
+  return finalize('oddrow','Odd one out','Which figure does not belong?',null,opts,
+    ['logic','pattern'], 98+(fam==='mirror'?10:fam==='parity'?4:0)+J(), true);
+}
+
+/* ---------- figure builders ---------- */
+function matrixFig(cells,g){
+  const cs = g===3? 'min(86px, 23vw)' : '92px';
+  const inner=cells.map(c=>c.q?`<div class="cell q"><span class="qmark">?</span></div>`:`<div class="cell">${c.svg}</div>`).join('');
+  return `<div class="figwrap"><div class="mtx" style="grid-template-columns:repeat(${g},1fr);--cs:${cs}">${inner}</div></div>`;
+}
+function seqFig(items){
+  const parts=[]; items.forEach((s,i)=>{parts.push(`<div class="cell" style="--cs:78px">${s}</div>`); parts.push('<span class="arrowi">&rarr;</span>');});
+  parts.push(`<div class="cell q" style="--cs:78px"><span class="qmark">?</span></div>`);
+  return `<div class="figwrap"><div class="seq">${parts.join('')}</div></div>`;
+}
+function anaFig(A,B,Cc){
+  return `<div class="figwrap"><div class="ana">
+    <div class="cell" style="--cs:74px">${A}</div><span class="rel">:</span><div class="cell" style="--cs:74px">${B}</div>
+    <span class="rel">::</span>
+    <div class="cell" style="--cs:74px">${Cc}</div><span class="rel">:</span><div class="cell q" style="--cs:74px"><span class="qmark">?</span></div>
+  </div></div>`;
+}
+
+/* ---------- helpers ---------- */
+function eqSet(a,b){return a.length===b.length&&a.every((v,i)=>v===b[i]);}
+function dedupe(opts){ // for rotation: keep correct, drop later opts identical in svg
+  const seen=new Set(); const out=[];
+  for(const o of opts){ if(seen.has(o.svg)){continue;} seen.add(o.svg); out.push(o); }
+  let i=0; const names=['flag','arrow','ell','key'];
+  while(out.length<4){ const extra=shape(pick(names),rnd(1,7)*45); if(!seen.has(extra)){seen.add(extra);out.push({svg:extra});} if(++i>20)break;}
+  return out.slice(0,4);
+}
+function finalize(kind,kindLabel,prompt,fig,opts,domain,difficulty,oddRow=false){
+  opts=shuffle(opts);
+  const answer=opts.findIndex(o=>o.ok);
+  return {kind,kindLabel,prompt,fig,opts,answer,domain,difficulty:clamp(Math.round(difficulty),72,142),oddRow};
+}
+
+/* ---------- build the item bank ---------- */
+const GENS=[genRotation,genCount,genSuper,genSequence,genAnalogy,genOdd];
+function buildBank(per=9){
+  const bank=[];
+  GENS.forEach(g=>{for(let i=0;i<per;i++){try{const it=g(); if(it.answer<0)continue; bank.push(it);}catch(e){}}});
+  return bank;
+}
+
+/* ---------- self test (guarantee correctness) ---------- */
+function selfTest(){
+  let pass=0,fail=0,msgs=[];
+  for(let t=0;t<400;t++){
+    const g=pick(GENS); let it;
+    try{it=g();}catch(e){fail++;msgs.push('throw '+g.name);continue;}
+    const oks=it.opts.filter(o=>o.ok).length;
+    const svgs=it.opts.map(o=>o.svg);
+    if(oks!==1){fail++;msgs.push(g.name+' oks='+oks);continue;}
+    if(it.answer<0||it.answer>=it.opts.length){fail++;msgs.push(g.name+' badidx');continue;}
+    if(it.oddRow){
+      // duplicate conforming tiles are valid; the odd tile must differ from all others
+      const odd=it.opts[it.answer].svg;
+      const distinct=it.opts.every((o,i)=>i===it.answer||o.svg!==odd);
+      if(!distinct){fail++;msgs.push(g.name+' odd-not-distinct');continue;}
+      pass++;
+    } else {
+      if(new Set(svgs).size!==svgs.length){fail++;msgs.push(g.name+' dup-opts ('+new Set(svgs).size+'/'+svgs.length+')');continue;}
+      pass++;
+    }
+  }
+  console.log('SELFTEST pass='+pass+' fail='+fail, fail?msgs.slice(0,8):'');
+  return {pass,fail};
+}
+
+/* ============================================================
+   ADAPTIVE ENGINE + STATE
+   ============================================================ */
+const TOTAL = 18;
+let bank=[], used=new Set(), order=[], idx=0, locked=false;
+let theta=100;
+const dTheta={pattern:100,logic:100,spatial:100,memory:100};
+const domCount={pattern:0,logic:0,spatial:0,memory:0};
+let responses=[]; // {difficulty, correct, rt, domain}
+let qStart=0;
+
+function expected(d,th){return 1/(1+Math.pow(10,(d-th)/32));}
+function chooseNext(){
+  const cands=bank.filter((_,i)=>!used.has(i));
+  if(!cands.length)return null;
+  cands.forEach(it=>it._d=Math.abs(it.difficulty-theta));
+  cands.sort((a,b)=>a._d-b._d);
+  const near=cands.slice(0,6);
+  // prefer least-covered primary domain for balance
+  near.sort((a,b)=>domCount[a.domain[0]]-domCount[b.domain[0]]);
+  const chosen=near[0];
+  return bank.indexOf(chosen);
+}
+function applyAnswer(it,correct,rt){
+  const i=idx+1;
+  const K=Math.max(6,12-i*0.35);
+  const p=expected(it.difficulty,theta);
+  theta+=K*((correct?1:0)-p);
+  // speed nudge (small, only if correct)
+  if(correct){const expT=6000+Math.max(0,it.difficulty-90)*120; const z=clamp((expT-rt)/4000,-1,1); theta+=K*0.07*z;}
+  theta=clamp(theta,55,165);
+  // per-domain elo
+  it.domain.forEach((dm,di)=>{
+    if(!(dm in dTheta))return;
+    const w=di===0?1:0.5; const pp=expected(it.difficulty,dTheta[dm]);
+    dTheta[dm]+=K*w*((correct?1:0)-pp); dTheta[dm]=clamp(dTheta[dm],55,165);
+    if(di===0)domCount[dm]++;
+  });
+  responses.push({difficulty:it.difficulty,correct,rt,domain:it.domain[0]});
+}
+
+/* ============================================================
+   FLOW
+   ============================================================ */
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('show'));$(id).classList.add('show');window.scrollTo(0,0);}
+
+function startTest(){
+  bank=buildBank(9); used.clear(); idx=0; theta=100; responses=[]; locked=false;
+  Object.keys(dTheta).forEach(k=>{dTheta[k]=100;domCount[k]=0;});
+  $('#qtot').textContent=TOTAL; $('#calib').style.display='flex';
+  show('#s-quiz');
+  updateCalib();
+  nextQuestion();
+}
+
+function nextQuestion(){
+  if(idx>=TOTAL){return finishTest();}
+  const bi=chooseNext(); if(bi==null){return finishTest();}
+  used.add(bi); const it=bank[bi]; window._cur=it;
+  $('#qnow').textContent=idx+1;
+  $('#qkind').textContent=it.kindLabel;
+  $('#qprompt').textContent=it.prompt;
+  $('#qfig').innerHTML=it.fig||'';
+  const wrap=$('#qopts'); wrap.className='opts'+(it.oddRow?' five':(it.kind==='sequence'?' row':''));
+  wrap.innerHTML='';
+  it.opts.forEach((o,i)=>{
+    const b=document.createElement('button'); b.className='opt';
+    b.innerHTML=`<span class="key">${i+1}</span>${o.svg}`;
+    b.onclick=()=>choose(i,b,it);
+    wrap.appendChild(b);
+  });
+  qStart=performance.now();
+}
+
+function choose(i,btn,it){
+  if(btn.parentElement.classList.contains('locked'))return;
+  const rt=performance.now()-qStart;
+  btn.parentElement.classList.add('locked');
+  document.querySelectorAll('.opt').forEach(o=>o.classList.add('lock'));
+  btn.classList.add('sel');
+  const correct = i===it.answer;
+  applyAnswer(it,correct,rt);
+  idx++;
+  updateCalib();
+  setTimeout(()=>{ if(idx>=TOTAL){finishTest();} else {nextQuestion();} }, 430);
+}
+
+// IQ 70..140 -> 0..100 % on the calibration/range track
+const toPct = iq => clamp((iq-70)/(140-70)*100,2,98);
+
+function updateCalib(){
+  const prog=idx/TOTAL;
+  $('#precision').style.width=(prog*100)+'%';
+  const pos=toPct(theta);
+  $('#marker').style.left=pos+'%';
+  const bandHalfIQ = 22 - 16*prog; // narrows as we learn
+  const lo=toPct(theta-bandHalfIQ), hi=toPct(theta+bandHalfIQ);
+  $('#band').style.left=lo+'%'; $('#band').style.width=(hi-lo)+'%';
+  if(idx>=TOTAL){$('.calib-top span').textContent='Locked in';}
+}
+
+function finishTest(){
+  $('#calib').querySelector('.calib-top span').textContent='Locked in';
+  show('#s-analyzing');
+  runAnalyzing();
+}
+
+function runAnalyzing(){
+  const steps=['Scoring your responses','Weighting difficulty and speed','Mapping your five domains','Matching your IQ Profile'];
+  const log=$('#alog'); log.innerHTML='';
+  steps.forEach(s=>{const d=document.createElement('div');d.className='aline';d.innerHTML=`<span class="dot"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>${s}`;log.appendChild(d);});
+  const lines=[...log.children];
+  let i=0; const tick=()=>{ if(i<lines.length){lines[i].classList.add('done'); i++; setTimeout(tick,560);} else { setTimeout(showResults,500);} };
+  setTimeout(tick,350);
+}
+
+/* ============================================================
+   SCORING -> RESULTS
+   ============================================================ */
+const DOMAINS=[['pattern','Pattern recognition'],['logic','Logical reasoning'],['spatial','Spatial reasoning'],['memory','Working memory'],['speed','Processing speed']];
+
+function computeScores(){
+  const iq=clamp(Math.round(theta),55,160);
+  // domain IQs
+  const dom={};
+  ['pattern','logic','spatial'].forEach(k=> dom[k]= domCount[k]>0?clamp(Math.round(dTheta[k]),55,160):iq);
+  dom.memory = domCount.memory>0 ? clamp(Math.round(dTheta.memory),55,160) : Math.round((dom.pattern+dom.logic)/2);
+  // processing speed from response times on correct answers
+  const cor=responses.filter(r=>r.correct);
+  if(cor.length){
+    const zs=cor.map(r=>{const expT=6000+Math.max(0,r.difficulty-90)*120; return clamp((expT-r.rt)/4000,-1.4,1.4);});
+    const mz=zs.reduce((a,b)=>a+b,0)/zs.length;
+    dom.speed=clamp(Math.round(100+13*mz),55,160);
+  } else dom.speed=clamp(iq-10,55,160);
+  // recenter the four reasoning domains around the well-sampled overall estimate (preserves relative spread, keeps the headline IQ inside the domain range)
+  const _R=['pattern','logic','spatial','memory'];
+  const _shift=theta - _R.reduce((a,k)=>a+dom[k],0)/4;
+  _R.forEach(k=>dom[k]=clamp(Math.round(dom[k]+_shift),55,160));
+  dom.speed=clamp(dom.speed,Math.round(theta-22),Math.round(theta+22)); dom.speed=clamp(dom.speed,55,160);
+  // confidence interval
+  const h=clamp(Math.round(40/Math.sqrt(Math.max(1,responses.length))),5,8);
+  const lo=iq-h, hi=iq+h;
+  // percentile (normal cdf)
+  const pct=clamp(Math.round(100*normCdf((iq-100)/15)),1,99);
+  // accuracy by difficulty band
+  const bands={Easy:[0,0],Medium:[0,0],Hard:[0,0]};
+  responses.forEach(r=>{const b=r.difficulty<98?'Easy':r.difficulty<116?'Medium':'Hard';bands[b][1]++;if(r.correct)bands[b][0]++;});
+  const avgRt=responses.length?Math.round(responses.reduce((a,r)=>a+r.rt,0)/responses.length/100)/10:0;
+  return {iq,dom,lo,hi,h,pct,bands,avgRt,answered:responses.length};
+}
+function normCdf(z){return 0.5*(1+erf(z/Math.SQRT2));}
+function erf(x){const t=1/(1+0.3275911*Math.abs(x));const y=1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-0.284496736)*t+0.254829592)*t*Math.exp(-x*x);return x>=0?y:-y;}
+
+/* ---------- profiles ---------- */
+const PROFILE_IC={
+  explorer:'<path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/><circle cx="12" cy="12" r="3.2"/>',
+  river:'<path d="M3 8c3-3 6 3 9 0s6-3 9 0M3 14c3-3 6 3 9 0s6-3 9 0"/>',
+  lighthouse:'<path d="M10 21h4M9 21l1-9h4l1 9M12 3v2M12 8.5l-2-2.5h4l-2 2.5M5 9l2 1M19 9l-2 1"/>',
+  strategist:'<path d="M4 20l5-5M9 9l6 6M20 4l-5 5"/><circle cx="4" cy="20" r="1.6"/><circle cx="20" cy="4" r="1.6"/><circle cx="12" cy="12" r="2.4"/>',
+  architect:'<path d="M4 20V8l8-5 8 5v12M4 20h16M9 20v-6h6v6"/>',
+  quicksilver:'<path d="M13 2L5 14h6l-1 8 8-12h-6z"/>',
+  anchor:'<circle cx="12" cy="5" r="2.4"/><path d="M12 7.4V21M6 12H4a8 8 0 0 0 16 0h-2M8 11h8"/>',
+  prism:'<path d="M12 3l9 16H3z"/><path d="M12 3v16M7 12h10"/>',
+};
+const PROFILES={
+  explorer:{name:'The Explorer',tag:'Balanced and divergent',defining:['pattern','logic','spatial','memory','speed'],
+    desc:'Your strengths run even across all five domains rather than spiking in one. That balance is its own advantage: you adapt to unfamiliar problems instead of forcing them into a single style.'},
+  river:{name:'The River',tag:'Speed meets pattern',defining:['speed','pattern'],
+    desc:'You read patterns fast and act on them faster. Where others deliberate, you have already moved, and you are usually right.'},
+  lighthouse:{name:'The Lighthouse',tag:'Logic and memory',defining:['logic','memory'],
+    desc:'You hold a lot in mind at once and reason through it cleanly. Complex, multi-step problems are where you do your best thinking.'},
+  strategist:{name:'The Strategist',tag:'Pattern and spatial',defining:['pattern','spatial'],
+    desc:'You see the structure of a problem and how its pieces move together. You plan in shapes and systems, several steps ahead.'},
+  architect:{name:'The Architect',tag:'Spatial and logic',defining:['spatial','logic'],
+    desc:'You build precise mental models and reason rigorously inside them. You are at your best constructing order out of complexity.'},
+  quicksilver:{name:'The Quicksilver',tag:'Processing speed',defining:['speed'],
+    desc:'Your standout strength is raw speed. You reach correct answers before the problem has finished settling for everyone else.'},
+  anchor:{name:'The Anchor',tag:'Working memory',defining:['memory'],
+    desc:'You can hold and manipulate more information at once than most. Dense, detail-heavy problems do not overwhelm you, they suit you.'},
+  prism:{name:'The Prism',tag:'All five, elevated',defining:['pattern','logic','spatial','memory','speed'],
+    desc:'Every domain came back strong. This is the rarest signature: high ability with no obvious weak edge to work around.'},
+};
+function assignProfile(dom){
+  const arr=DOMAINS.map(([k])=>({id:k,v:dom[k]})).sort((a,b)=>b.v-a.v);
+  const vals=arr.map(a=>a.v); const min=Math.min(...vals),max=Math.max(...vals),spread=max-min;
+  if(min>=118) return 'prism';
+  if(spread<=9) return 'explorer';
+  const top1=arr[0],top2=arr[1],gap=top1.v-top2.v;
+  if(gap>=11){ if(top1.id==='speed')return 'quicksilver'; if(top1.id==='memory')return 'anchor'; }
+  const set=new Set([top1.id,top2.id]);
+  const has=(a,b)=>set.has(a)&&set.has(b);
+  if(has('speed','pattern'))return 'river';
+  if(has('logic','memory'))return 'lighthouse';
+  if(has('pattern','spatial'))return 'strategist';
+  if(has('spatial','logic'))return 'architect';
+  // fallback by dominant domain
+  return {speed:'quicksilver',memory:'anchor',pattern:'strategist',spatial:'architect',logic:'lighthouse'}[top1.id]||'explorer';
+}
+
+let SCORES=null, PROFILE=null;
+function showResults(){
+  const s=computeScores(); SCORES=s;
+  const pid=assignProfile(s.dom); PROFILE=PROFILES[pid]; PROFILE._id=pid;
+  show('#s-results');
+  $('#calib').style.display='none';
+
+  // range count-up
+  animateRange(s.lo,s.hi);
+  $('#rangeCap').textContent=`90% confidence interval`;
+  setTimeout(()=>{ $('#rbarFill').style.left=toPct(s.lo)+'%'; $('#rbarFill').style.width=(toPct(s.hi)-toPct(s.lo))+'%'; },300);
+
+  // profile
+  $('#pcIc').innerHTML=`<svg viewBox="0 0 24 24" fill="none">${PROFILE_IC[pid]}</svg>`;
+  $('#pcName').textContent=PROFILE.name;
+  $('#pcTag').textContent=PROFILE.tag;
+  $('#pcDesc').textContent=PROFILE.desc;
+  const sig=$('#pcSig'); sig.innerHTML='';
+  DOMAINS.forEach(([k,label])=>{
+    const isKey=PROFILE.defining.includes(k);
+    const pctw=clamp((s.dom[k]-70)/70*100,8,100);
+    const row=document.createElement('div'); row.className='sig-row'+(isKey?' key':'');
+    row.innerHTML=`<span class="nm">${label}</span><div class="sig-bar"><i style="width:0" data-w="${pctw}%"></i></div>`;
+    sig.appendChild(row);
+  });
+  setTimeout(()=>sig.querySelectorAll('i').forEach((b,i)=>setTimeout(()=>b.style.width=b.dataset.w,i*90)),350);
+
+  // locked report content (rendered, blurred until unlock)
+  $('#stScore').textContent=s.iq;
+  $('#stScoreS').textContent=`range ${s.lo}\u2013${s.hi}`;
+  $('#stPct').textContent=ordinal(s.pct);
+  $('#stPctS').textContent=`higher than ${s.pct}% of test takers`;
+  const dw=$('#domWrap'); dw.innerHTML='';
+  DOMAINS.forEach(([k,label])=>{
+    const pctw=clamp((s.dom[k]-70)/70*100,6,100);
+    const row=document.createElement('div'); row.className='dom-row';
+    row.innerHTML=`<span class="nm">${label}</span><div class="dom-bar"><i style="width:${pctw}%"></i></div><span class="num">${s.dom[k]}</span>`;
+    dw.appendChild(row);
+  });
+  const aw=$('#accWrap'); aw.innerHTML='';
+  Object.entries(s.bands).forEach(([band,[c,t]])=>{
+    const p=t?Math.round(100*c/t):0;
+    const col=document.createElement('div'); col.className='acc-col';
+    col.innerHTML=`<div class="bar"><i style="height:${t?Math.max(6,p*0.8):4}px"></i></div><div class="pct">${t?p+'%':'\u2013'}</div><div class="cl">${band}</div>`;
+    aw.appendChild(col);
+  });
+}
+function ordinal(n){const s=['th','st','nd','rd'],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);}
+
+function animateRange(lo,hi){
+  const el=$('#rangeVal'); const dur=1100,t0=performance.now();
+  const tick=now=>{const p=Math.min((now-t0)/dur,1);const e=1-Math.pow(1-p,3);
+    const a=Math.round(lo*e),b=Math.round(hi*e); el.textContent=`${a}\u2013${b}`;
+    if(p<1)requestAnimationFrame(tick);};
+  requestAnimationFrame(tick);
+}
+
+/* ---------- unlock / checkout ---------- */
+function openCheckout(){$('#checkoutForm').style.display='block';$('#checkoutProc').style.display='none';$('#modalBg').classList.add('show');}
+function closeCheckout(){$('#modalBg').classList.remove('show');}
+function pay(){
+  $('#checkoutForm').style.display='none';$('#checkoutProc').style.display='block';
+  setTimeout(()=>{ closeCheckout(); doUnlock(); }, 1600);
+}
+function doUnlock(){
+  $('#lkBody').classList.remove('blur');
+  $('#paywall').style.display='none';
+  $('#shareCard').classList.add('show');
+  $('#rActions').classList.add('show');
+  // animate the domain bars + accuracy now that they're visible
+  $('#domWrap').querySelectorAll('.dom-bar i').forEach((b,i)=>{const w=b.style.width;b.style.width='0';setTimeout(()=>{b.style.transition='width .8s cubic-bezier(.2,.7,.3,1)';b.style.width=w;},60+i*70);});
+  toast('Report unlocked');
+  $('#s-results').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ---------- shareable card (SVG -> PNG) ---------- */
+function downloadCard(){
+  const s=SCORES,p=PROFILE; if(!s||!p)return;
+  const W=1200,H=630;
+  const card=`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+    <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#16121f"/><stop offset="1" stop-color="#241a3d"/></linearGradient>
+    <linearGradient id="txt" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#C9BCFF"/><stop offset="1" stop-color="#ffffff"/></linearGradient></defs>
+    <rect width="${W}" height="${H}" fill="url(#bg)"/>
+    <circle cx="1040" cy="90" r="260" fill="#7A5CFF" opacity="0.28"/>
+    <text x="80" y="120" fill="#C9BCFF" font-family="Plus Jakarta Sans,Arial" font-size="26" font-weight="700" letter-spacing="3">BRAINSIZE &#183; IQ PROFILE</text>
+    <text x="80" y="250" fill="#fff" font-family="Plus Jakarta Sans,Arial" font-size="84" font-weight="800">${p.name}</text>
+    <text x="80" y="300" fill="#C9BCFF" font-family="Plus Jakarta Sans,Arial" font-size="30" font-weight="600">${p.tag}</text>
+    <text x="80" y="470" fill="rgba(255,255,255,.55)" font-family="Plus Jakarta Sans,Arial" font-size="26" font-weight="600">ESTIMATED IQ</text>
+    <text x="80" y="560" fill="url(#txt)" font-family="Plus Jakarta Sans,Arial" font-size="92" font-weight="800">${s.lo}\u2013${s.hi}</text>
+    <text x="540" y="470" fill="rgba(255,255,255,.55)" font-family="Plus Jakarta Sans,Arial" font-size="26" font-weight="600">PERCENTILE</text>
+    <text x="540" y="560" fill="#fff" font-family="Plus Jakarta Sans,Arial" font-size="92" font-weight="800">${ordinal(s.pct)}</text>
+    <text x="80" y="610" fill="rgba(255,255,255,.4)" font-family="Plus Jakarta Sans,Arial" font-size="22" font-weight="600">brainsize.app</text>
+  </svg>`;
+  try{
+    const blob=new Blob([card],{type:'image/svg+xml'});
+    const url=URL.createObjectURL(blob);
+    const img=new Image();
+    img.onload=()=>{
+      const cv=document.createElement('canvas');cv.width=W;cv.height=H;
+      const ctx=cv.getContext('2d');ctx.drawImage(img,0,0);
+      URL.revokeObjectURL(url);
+      cv.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='brainsize-'+PROFILE._id+'.png';a.click();toast('Card downloaded');},'image/png');
+    };
+    img.onerror=()=>{const a=document.createElement('a');a.href=url;a.download='brainsize-card.svg';a.click();toast('Card downloaded');};
+    img.src=url;
+  }catch(e){toast('Could not generate card');}
+}
+
+/* ---------- toast ---------- */
+let toastT;
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2200);}
+
+/* ============================================================
+   WIRING
+   ============================================================ */
+$('#begin').onclick=startTest;
+$('#unlockBtn').onclick=openCheckout;
+$('#payBtn').onclick=pay;
+$('#ckCancel').onclick=closeCheckout;
+$('#modalBg').onclick=e=>{if(e.target===$('#modalBg'))closeCheckout();};
+$('#dlCard').onclick=downloadCard;
+$('#exit').onclick=e=>{ if($('#s-quiz').classList.contains('show')){ if(!confirm('Leave the assessment? Your progress will be lost.'))e.preventDefault(); } };
+addEventListener('scroll',()=>$('#bar').classList.toggle('on',scrollY>4),{passive:true});
+addEventListener('keydown',e=>{
+  if($('#s-ready').classList.contains('show')&&e.key==='Enter'){startTest();}
+  if($('#s-quiz').classList.contains('show')){
+    const n=parseInt(e.key); const opts=document.querySelectorAll('#qopts .opt');
+    if(n>=1&&n<=opts.length){opts[n-1].click();}
+    const map={a:1,b:2,c:3,d:4}; if(map[e.key.toLowerCase()]&&opts[map[e.key.toLowerCase()]-1])opts[map[e.key.toLowerCase()]-1].click();
+  }
+});
+
+// run self-test if requested
+if(location.search.includes('selftest')){ const r=selfTest(); document.title='selftest pass='+r.pass+' fail='+r.fail; }
+// expose for automated walkthrough
+window.__bs={get cur(){return window._cur;},startTest,get scores(){return SCORES;},get profile(){return PROFILE;}};
+</script>
+</body>
+</html>

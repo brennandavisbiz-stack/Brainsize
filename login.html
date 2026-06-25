@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Log in | BrainSize</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--brand-600:#5B3DF5;--brand-700:#4A2FD9;--brand-500:#7A5CFF;--brand-400:#9B85FF;--brand-100:#ECE8FE;--brand-050:#F5F3FF;--ink-900:#111114;--ink-600:#5A5A66;--ink-400:#9A9AA6;--surface-alt:#F7F7F9;--border:#ECECF1;--green:#6EE7A0;--radius:22px}
+  *{margin:0;padding:0;box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+  body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:var(--ink-900);line-height:1.5;-webkit-font-smoothing:antialiased;background:#FBFAFE}
+  a{color:inherit;text-decoration:none}button{font-family:inherit;cursor:pointer}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+  .auth{display:flex;min-height:100vh}
+  .auth-main{flex:1;display:flex;flex-direction:column;padding:30px 40px}
+  .auth-logo{display:inline-flex;align-items:center;gap:9px;font-weight:800;font-size:17px;flex:none}
+  .lmark{width:32px;height:32px;border-radius:10px;background:linear-gradient(140deg,#7A5CFF,#5B3DF5);box-shadow:0 4px 12px rgba(91,61,245,.3);display:flex;align-items:center;justify-content:center}
+  .lmark svg{width:19px;height:19px}
+  .auth-form{margin:auto;width:100%;max-width:392px;padding:24px 0}
+  .auth-form h1{font-size:29px;font-weight:800;letter-spacing:-.025em;margin-bottom:8px}
+  .auth-form .sub{color:var(--ink-600);font-size:15.5px;font-weight:500;margin-bottom:28px}
+  .social{display:flex;flex-direction:column;gap:11px}
+  .sbtn{display:flex;align-items:center;justify-content:center;gap:10px;border:1.5px solid var(--border);background:#fff;border-radius:12px;padding:13px;font-weight:700;font-size:14.5px;color:var(--ink-900);transition:background .15s,border-color .15s}
+  .sbtn:hover{background:var(--surface-alt);border-color:#dcd9e4}
+  .divider{display:flex;align-items:center;gap:14px;color:var(--ink-400);font-size:12.5px;font-weight:700;margin:22px 0;text-transform:uppercase;letter-spacing:.06em}
+  .divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--border)}
+  .field{margin-bottom:15px}
+  .field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
+  .field input{width:100%;border:1.5px solid var(--border);border-radius:11px;padding:13px 14px;font-size:15px;font-family:inherit;background:#fff;transition:border-color .15s,box-shadow .15s}
+  .field input:focus{outline:none;border-color:var(--brand-400);box-shadow:0 0 0 3px rgba(91,61,245,.1)}
+  .forgot{display:block;text-align:right;font-size:13px;font-weight:700;color:var(--brand-600);margin:-4px 0 18px}
+  .forgot:hover{text-decoration:underline}
+  .abtn{display:block;width:100%;text-align:center;background:var(--brand-600);color:#fff;font-weight:700;border:none;border-radius:99px;padding:15px;font-size:16px;box-shadow:0 10px 24px rgba(91,61,245,.3);transition:background .15s,transform .15s;margin-top:8px}
+  .abtn:hover{background:var(--brand-700);transform:translateY(-1px)}
+  .auth-foot{text-align:center;font-size:14px;color:var(--ink-600);font-weight:500;margin-top:24px}
+  .auth-foot a{color:var(--brand-600);font-weight:700}
+  .auth-foot a:hover{text-decoration:underline}
+  .legal{font-size:12px;color:var(--ink-400);text-align:center;margin-top:22px;line-height:1.55}
+  .legal a{color:var(--ink-600);font-weight:600;text-decoration:underline}
+  /* brand panel */
+  .auth-side{width:44%;flex:none;background:linear-gradient(160deg,#16121f,#241a3d);color:#fff;padding:46px;display:flex;flex-direction:column;position:relative;overflow:hidden}
+  .auth-side::before{content:"";position:absolute;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,#7A5CFF,transparent 70%);opacity:.35;top:-180px;right:-120px}
+  .auth-side>*{position:relative}
+  .side-content{margin:auto 0;max-width:400px}
+  .side-content h2{font-size:31px;font-weight:800;letter-spacing:-.025em;line-height:1.15;margin-bottom:14px}
+  .side-content p{font-size:16px;color:rgba(255,255,255,.78);font-weight:500}
+  .benefits{list-style:none;display:flex;flex-direction:column;gap:15px;margin-top:30px}
+  .benefits li{display:flex;align-items:flex-start;gap:12px;font-size:15.5px;font-weight:600;color:rgba(255,255,255,.92)}
+  .benefits li svg{width:20px;height:20px;stroke:var(--green);fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;flex:none;margin-top:1px}
+  .side-stats{display:flex;gap:30px;margin-top:34px}
+  .side-stats .v{font-size:26px;font-weight:800;letter-spacing:-.02em}
+  .side-stats .k{font-size:12.5px;color:rgba(255,255,255,.6);font-weight:600;margin-top:2px}
+  .quote{margin-top:34px;font-size:18px;font-weight:600;line-height:1.5;color:#fff}
+  .quote cite{display:block;font-size:13.5px;font-weight:600;color:rgba(255,255,255,.6);font-style:normal;margin-top:12px}
+  /* result preview card */
+  .rpv{margin-top:34px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:18px;padding:24px}
+  .rpv .tag{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#C9BCFF;margin-bottom:8px}
+  .rpv .range{font-size:46px;font-weight:800;letter-spacing:-.03em;line-height:1;background:linear-gradient(120deg,#fff,#C9BCFF);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .rpv .rlbl{font-size:12.5px;color:rgba(255,255,255,.6);font-weight:600;margin-top:6px}
+  .rpv .prof{display:flex;align-items:center;gap:10px;margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,255,.14)}
+  .rpv .prof .pi{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;flex:none}
+  .rpv .prof .pi svg{width:19px;height:19px;stroke:#fff;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  .rpv .prof .pn{font-size:15px;font-weight:800}
+  .rpv .prof .pp{font-size:12px;color:rgba(255,255,255,.6);font-weight:600}
+  @media (max-width:900px){.auth-side{display:none}.auth-main{padding:26px 22px}}
+</style>
+</head>
+<body>
+<div class="auth">
+  <main class="auth-main">
+    <a class="auth-logo" href="/"><span class="lmark"><svg viewBox="0 0 36 36" fill="none"><path d="M18 9.5 11.5 14.5M18 9.5 24.5 14.5M11.5 14.5 18 19M24.5 14.5 18 19M18 19 12.5 23.5M18 19 23.5 23.5M11.5 14.5 12.5 23.5M24.5 14.5 23.5 23.5" stroke="#fff" stroke-opacity=".5" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="9.5" r="2.2" fill="#fff"/><circle cx="11.5" cy="14.5" r="1.9" fill="#fff"/><circle cx="24.5" cy="14.5" r="1.9" fill="#fff"/><circle cx="12.5" cy="23.5" r="1.9" fill="#fff"/><circle cx="23.5" cy="23.5" r="1.9" fill="#fff"/><circle cx="18" cy="19" r="3" fill="#fff"/><circle cx="18" cy="19" r="1.3" fill="#5B3DF5"/></svg></span>BrainSize</a>
+    <div class="auth-form">
+      <h1>Welcome back</h1>
+      <p class="sub">Log in to pick up your training where you left off.</p>
+      <div class="social">
+        <a class="sbtn" href="/dashboard"><svg viewBox="0 0 24 24" width="18" height="18"><path fill="#4285F4" d="M23 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.2c-.3 1.4-1.1 2.6-2.3 3.4v2.8h3.7C21.8 18.7 23 15.8 23 12.3z"/><path fill="#34A853" d="M12 24c3.1 0 5.7-1 7.6-2.8l-3.7-2.8c-1 .7-2.3 1.1-3.9 1.1-3 0-5.5-2-6.4-4.8H1.8v2.9C3.7 21.4 7.5 24 12 24z"/><path fill="#FBBC05" d="M5.6 14.7c-.2-.7-.4-1.4-.4-2.2s.1-1.5.4-2.2V7.4H1.8C1 8.9.6 10.4.6 12s.4 3.1 1.2 4.6l3.8-2.9z"/><path fill="#EA4335" d="M12 4.8c1.7 0 3.2.6 4.4 1.7l3.3-3.3C17.7 1.2 15.1 0 12 0 7.5 0 3.7 2.6 1.8 6.4l3.8 2.9C6.5 6.8 9 4.8 12 4.8z"/></svg>Continue with Google</a>
+        <a class="sbtn" href="/dashboard"><svg viewBox="0 0 24 24" width="17" height="17" fill="#111114"><path d="M17.05 12.04c-.03-2.6 2.13-3.85 2.22-3.91-1.21-1.77-3.1-2.01-3.77-2.04-1.6-.16-3.12.94-3.93.94-.81 0-2.06-.92-3.39-.89-1.74.03-3.35 1.01-4.25 2.57-1.81 3.14-.46 7.79 1.3 10.34.86 1.25 1.89 2.65 3.23 2.6 1.3-.05 1.79-.84 3.36-.84 1.57 0 2.01.84 3.39.81 1.4-.03 2.28-1.27 3.13-2.53.99-1.45 1.4-2.85 1.42-2.93-.03-.01-2.72-1.04-2.75-4.13zM14.54 4.4c.71-.86 1.19-2.06 1.06-3.25-1.02.04-2.26.68-2.99 1.54-.66.76-1.23 1.98-1.08 3.15 1.14.09 2.3-.58 3.01-1.44z"/></svg>Continue with Apple</a>
+      </div>
+      <div class="divider">or</div>
+      <div class="field"><label for="email">Email</label><input type="email" id="email" placeholder="you@example.com"></div>
+      <div class="field"><label for="pw">Password</label><input type="password" id="pw" placeholder="Your password"></div>
+      <a class="forgot" href="/forgot">Forgot password?</a>
+      <a class="abtn" href="/dashboard">Log in</a>
+      <p class="auth-foot">New to BrainSize? <a href="/signup">Create an account</a></p>
+    </div>
+  </main>
+  <aside class="auth-side">
+    <a class="auth-logo" href="/" style="color:#fff"><span class="lmark"><svg viewBox="0 0 36 36" fill="none"><path d="M18 9.5 11.5 14.5M18 9.5 24.5 14.5M11.5 14.5 18 19M24.5 14.5 18 19M18 19 12.5 23.5M18 19 23.5 23.5M11.5 14.5 12.5 23.5M24.5 14.5 23.5 23.5" stroke="#fff" stroke-opacity=".55" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="9.5" r="2.2" fill="#fff"/><circle cx="11.5" cy="14.5" r="1.9" fill="#fff"/><circle cx="24.5" cy="14.5" r="1.9" fill="#fff"/><circle cx="12.5" cy="23.5" r="1.9" fill="#fff"/><circle cx="23.5" cy="23.5" r="1.9" fill="#fff"/><circle cx="18" cy="19" r="3" fill="#fff"/><circle cx="18" cy="19" r="1.3" fill="#5B3DF5"/></svg></span>BrainSize</a>
+    <div class="side-content">
+      <h2>Your mind, tracked over time.</h2>
+      <p>Every retest, every game, every point of progress, waiting for you.</p>
+      <div class="side-stats"><div><div class="v">8,400+</div><div class="k">active members</div></div><div><div class="v">4.8&#9733;</div><div class="k">average rating</div></div></div>
+    </div>
+  </aside>
+</div>
+</body>
+</html>

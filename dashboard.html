@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard | BrainSize</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --brand-600:#5B3DF5;--brand-700:#4A2FD9;--brand-500:#7A5CFF;--brand-400:#9B85FF;
+    --brand-100:#ECE8FE;--brand-050:#F5F3FF;
+    --ink-900:#111114;--ink-600:#5A5A66;--ink-400:#9A9AA6;
+    --surface:#FFFFFF;--surface-alt:#F7F7F9;--border:#ECECF1;
+    --green:#1D7A3E;--green-bg:#E7F6EC;--amber:#B07D12;--amber-bg:#FBF1D8;
+    --radius:22px;--side-w:250px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:var(--ink-900);line-height:1.55;-webkit-font-smoothing:antialiased;background:#FBFAFE}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+  /* ---------- APP SHELL (reused across member pages) ---------- */
+  .app{display:flex;min-height:100vh}
+  .side{width:var(--side-w);flex:none;position:fixed;inset:0 auto 0 0;background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;padding:22px 16px;z-index:40}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;padding:6px 8px 22px}
+  .brand-mark{width:34px;height:34px;border-radius:11px;background:linear-gradient(140deg,#7A5CFF,#5B3DF5);box-shadow:0 4px 12px rgba(91,61,245,.32);display:flex;align-items:center;justify-content:center}
+  .brand-mark svg{width:20px;height:20px}
+  .nav{display:flex;flex-direction:column;gap:3px}
+  .nav-sec{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-400);padding:14px 12px 6px}
+  .nav a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;font-size:14.5px;font-weight:600;color:var(--ink-600);transition:background .15s,color .15s}
+  .nav a svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+  .nav a:hover{background:var(--surface-alt);color:var(--ink-900)}
+  .nav a.active{background:var(--brand-050);color:var(--brand-600);font-weight:700}
+  .nav a .badge{margin-left:auto;font-size:10.5px;font-weight:800;background:var(--brand-600);color:#fff;border-radius:99px;padding:2px 7px}
+  .side-foot{margin-top:auto;padding-top:14px}
+  .userchip{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:13px;border:1px solid var(--border);background:var(--surface-alt)}
+  .ava{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#9B85FF,#5B3DF5);color:#fff;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;flex:none}
+  .userchip .nm{font-size:13px;font-weight:700;line-height:1.2;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+  .userchip .pl{font-size:11px;color:var(--brand-600);font-weight:700}
+
+  .main{flex:1;margin-left:var(--side-w);min-width:0;padding:26px 32px 60px}
+  .wrapm{max-width:1080px;margin:0 auto}
+
+  /* header */
+  .top{display:flex;align-items:center;gap:16px;margin-bottom:26px}
+  .top .hello h1{font-size:24px;font-weight:800;letter-spacing:-.02em;line-height:1.1}
+  .top .hello p{font-size:14px;color:var(--ink-600);font-weight:500;margin-top:2px}
+  .top .sp{margin-left:auto}
+  .streak{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--amber);background:var(--amber-bg);padding:9px 14px;border-radius:99px}
+  .streak svg{width:15px;height:15px;fill:currentColor}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--brand-600);color:#fff;font-weight:700;border:none;border-radius:99px;padding:12px 22px;font-size:14.5px;transition:background .15s,transform .15s,box-shadow .15s;box-shadow:0 8px 20px rgba(91,61,245,.28)}
+  .btn:hover{background:var(--brand-700);transform:translateY(-1px)}
+  .btn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+  .btn.ghost{background:#fff;color:var(--brand-600);border:1.5px solid #dcd4fb;box-shadow:none}
+  .btn.ghost:hover{background:var(--brand-050)}
+  .btn.sm{padding:9px 16px;font-size:13px;box-shadow:none}
+
+  /* grid + cards */
+  .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
+  .card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:22px;box-shadow:0 10px 30px rgba(17,17,20,.04)}
+  .card h3{font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-400);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+  .card h3 .link{margin-left:auto;font-size:11.5px;font-weight:700;color:var(--brand-600);letter-spacing:0;text-transform:none}
+  .c7{grid-column:span 7}.c5{grid-column:span 5}.c4{grid-column:span 4}.c8{grid-column:span 8}.c6{grid-column:span 6}.c12{grid-column:span 12}
+
+  /* snapshot */
+  .snap{background:linear-gradient(150deg,#16121f,#241a3d);color:#fff;border:none;position:relative;overflow:hidden;display:flex;flex-direction:column}
+  .snap::before{content:"";position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,#7A5CFF,transparent 70%);opacity:.4;top:-150px;right:-70px}
+  .snap>*{position:relative}
+  .snap h3{color:#C9BCFF}
+  .snap-row{display:flex;align-items:flex-end;gap:24px;flex-wrap:wrap}
+  .snap .iq{font-size:64px;font-weight:800;letter-spacing:-.03em;line-height:.9;background:linear-gradient(120deg,#fff,#C9BCFF);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .snap .iqlbl{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#C9BCFF;margin-bottom:6px}
+  .snap .meta{display:flex;flex-direction:column;gap:10px;padding-bottom:4px}
+  .snap .pill{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);border-radius:99px;padding:7px 13px;font-size:13px;font-weight:700}
+  .snap .pill svg{width:15px;height:15px;stroke:#C9BCFF;fill:none;stroke-width:2}
+  .snap .sub{font-size:13px;color:rgba(255,255,255,.62);font-weight:500}
+  .snap-stats{display:flex;gap:36px;margin-top:22px}
+  .snap-stats .ss span{display:block;font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#9b8fd0;margin-bottom:4px}
+  .snap-stats .ss b{font-size:15.5px;font-weight:800;color:#fff}
+  .snap-foot{display:flex;align-items:center;gap:12px;margin-top:auto;padding-top:18px;border-top:1px solid rgba(255,255,255,.12);flex-wrap:wrap}
+  .snap-foot .retest{font-size:12.5px;color:rgba(255,255,255,.7);font-weight:600;display:flex;align-items:center;gap:7px}
+  .snap-foot .retest b{color:#6EE7A0}
+  .btn.light{background:#fff;color:var(--ink-900);box-shadow:none}
+  .btn.light:hover{background:#f0edff;transform:translateY(-1px)}
+
+  /* radar */
+  .radar-wrap{display:flex;flex-direction:column;align-items:center}
+  #radar{width:100%;max-width:260px;height:auto}
+  .radar-key{display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;width:100%;margin-top:8px}
+  .rk{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--ink-600)}
+  .rk b{margin-left:auto;color:var(--ink-900);font-weight:800}
+  .rk .dotk{width:8px;height:8px;border-radius:50%;background:var(--brand-500);flex:none}
+
+  /* trend chart */
+  .trend-head{display:flex;align-items:baseline;gap:12px;margin-bottom:6px}
+  .trend-head .big{font-size:34px;font-weight:800;letter-spacing:-.02em}
+  .trend-head .delta{font-size:13.5px;font-weight:800;color:var(--green);background:var(--green-bg);padding:3px 10px;border-radius:99px}
+  .trend-head .since{font-size:12.5px;color:var(--ink-400);font-weight:600;margin-left:auto}
+  #trend{width:100%;height:auto;margin-top:8px}
+
+  /* daily training */
+  .ring-row{display:flex;align-items:center;gap:18px;margin-bottom:18px}
+  .ring{width:84px;height:84px;flex:none;position:relative}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .rc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .ring .rc b{font-size:20px;font-weight:800;line-height:1}
+  .ring .rc span{font-size:10px;font-weight:700;color:var(--ink-400);text-transform:uppercase;letter-spacing:.04em}
+  .ring-row .rt h4{font-size:17px;font-weight:800;letter-spacing:-.01em}
+  .ring-row .rt p{font-size:13px;color:var(--ink-600);font-weight:500;margin-top:3px}
+  .tasklist{display:flex;flex-direction:column;gap:9px;margin-bottom:18px}
+  .task{display:flex;align-items:center;gap:11px;padding:11px 13px;border:1px solid var(--border);border-radius:13px;font-size:13.5px;font-weight:600}
+  .task .ck{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);flex:none;display:flex;align-items:center;justify-content:center}
+  .task.done{color:var(--ink-400)}
+  .task.done .ck{background:var(--green);border-color:var(--green)}
+  .task.done .ck svg{width:11px;height:11px;stroke:#fff;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+  .task.done .tn{text-decoration:line-through}
+  .task .dom{margin-left:auto;font-size:11px;font-weight:700;color:var(--brand-600);background:var(--brand-050);padding:3px 9px;border-radius:99px}
+
+  /* continue / list cards */
+  .prog-card{display:flex;flex-direction:column;height:100%}
+  .prog-thumb{height:96px;border-radius:14px;background:linear-gradient(135deg,#5B3DF5,#9B85FF);position:relative;overflow:hidden;margin-bottom:14px;display:flex;align-items:center;justify-content:center}
+  .prog-thumb svg{width:46px;height:46px;stroke:rgba(255,255,255,.9);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+  .prog-card h4{font-size:16px;font-weight:800;letter-spacing:-.01em;margin-bottom:4px}
+  .prog-card .meta{font-size:12.5px;color:var(--ink-600);font-weight:600;margin-bottom:12px}
+  .pbar{height:7px;border-radius:99px;background:#EeEbF7;overflow:hidden;margin-bottom:14px}
+  .pbar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#9B85FF,#5B3DF5)}
+  .prog-card .btn{margin-top:auto}
+
+  .feed{display:flex;flex-direction:column;gap:2px}
+  .fitem{display:flex;align-items:center;gap:12px;padding:11px 4px;border-bottom:1px solid var(--border)}
+  .fitem:last-child{border-bottom:none}
+  .fic{width:36px;height:36px;border-radius:10px;background:var(--surface-alt);display:flex;align-items:center;justify-content:center;flex:none}
+  .fic svg{width:18px;height:18px;stroke:var(--brand-600);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .fitem .ft{font-size:13.5px;font-weight:700;line-height:1.25}
+  .fitem .fs{font-size:12px;color:var(--ink-400);font-weight:600}
+  .fitem .fv{margin-left:auto;font-size:13px;font-weight:800;color:var(--ink-900)}
+  .fitem .fv.pos{color:var(--green)}
+
+  /* leaderboard rank */
+  .lb-card{text-align:center;display:flex;flex-direction:column;height:100%}
+  .lb-rank{font-size:46px;font-weight:800;letter-spacing:-.02em;line-height:1;margin:6px 0 2px}
+  .lb-rank span{font-size:22px;color:var(--ink-400)}
+  .lb-sub{font-size:13px;color:var(--ink-600);font-weight:600;margin-bottom:14px}
+  .lb-move{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:800;color:var(--green);background:var(--green-bg);padding:5px 12px;border-radius:99px;margin:0 auto 16px}
+  .lb-move svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.6}
+  .lb-card .btn{margin-top:auto}
+
+  /* mobile tab bar */
+  .tabbar{display:none}
+  .topbar-m{display:none}
+
+  @media (max-width:900px){
+    .c7,.c5,.c4,.c8,.c6{grid-column:span 12}
+  }
+  @media (max-width:820px){
+    .app{display:block}
+    .side{display:none}
+    .main{margin-left:0;padding:0 0 86px}
+    .topbar-m{display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:30;background:rgba(251,250,254,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:13px 18px}
+    .topbar-m .brand{padding:0;font-size:16px}
+    .topbar-m .ava{margin-left:auto;width:32px;height:32px}
+    .wrapm{padding:20px 18px 0}
+    .top{margin-bottom:20px}
+    .top .hello h1{font-size:21px}
+    .top .sp,.top .streak{display:none}
+    .grid{gap:14px}
+    .snap .iq{font-size:54px}
+    .tabbar{display:flex;position:fixed;inset:auto 0 0 0;z-index:50;background:#fff;border-top:1px solid var(--border);padding:8px 6px 10px;justify-content:space-around}
+    .tab{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10.5px;font-weight:700;color:var(--ink-400);flex:1;padding:4px}
+    .tab svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+    .tab.active{color:var(--brand-600)}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ===== SIDEBAR (shared app shell) ===== -->
+  <aside class="side">
+    <a class="brand" href="/dashboard"><span class="brand-mark"><svg viewBox="0 0 36 36" fill="none"><path d="M18 9.5 11.5 14.5M18 9.5 24.5 14.5M11.5 14.5 18 19M24.5 14.5 18 19M18 19 12.5 23.5M18 19 23.5 23.5M11.5 14.5 12.5 23.5M24.5 14.5 23.5 23.5" stroke="#fff" stroke-opacity=".5" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="9.5" r="2.2" fill="#fff"/><circle cx="11.5" cy="14.5" r="1.9" fill="#fff"/><circle cx="24.5" cy="14.5" r="1.9" fill="#fff"/><circle cx="12.5" cy="23.5" r="1.9" fill="#fff"/><circle cx="23.5" cy="23.5" r="1.9" fill="#fff"/><circle cx="18" cy="19" r="3" fill="#fff"/><circle cx="18" cy="19" r="1.3" fill="#5B3DF5"/></svg></span>BrainSize</a>
+
+    <nav class="nav">
+      <a class="active" href="/dashboard"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Dashboard</a>
+      <a href="/instructions"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Take a test</a>
+      <a href="/games"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="4"/><path d="M7 12h3M8.5 10.5v3"/><circle cx="16" cy="11" r="1"/><circle cx="18.5" cy="13.5" r="1"/></svg>Brain games</a>
+      <a href="/learn"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M19 3v18"/></svg>Learning hub</a>
+      <a href="/progress"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 14l3-4 3 3 5-7"/></svg>Progress</a>
+      <a href="/leaderboard"><svg viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 5H4v2a3 3 0 0 0 3 3M17 5h3v2a3 3 0 0 1-3 3"/></svg>Leaderboard</a>
+    </nav>
+
+    <div class="side-foot">
+      <nav class="nav" style="margin-bottom:10px">
+        <a href="/account"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Account</a>
+        <a href="/help"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1 .8-1 1.7M12 17h.01"/></svg>Help</a>
+      </nav>
+      <a class="userchip" href="/account">
+        <span class="ava">AR</span>
+        <span style="min-width:0"><div class="nm">Alex Rivera</div><div class="pl">BrainSize+</div></span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- ===== MOBILE TOP BAR ===== -->
+  <div class="topbar-m">
+    <a class="brand" href="/dashboard"><span class="brand-mark"><svg viewBox="0 0 36 36" fill="none"><path d="M18 9.5 11.5 14.5M18 9.5 24.5 14.5M11.5 14.5 18 19M24.5 14.5 18 19M18 19 12.5 23.5M18 19 23.5 23.5M11.5 14.5 12.5 23.5M24.5 14.5 23.5 23.5" stroke="#fff" stroke-opacity=".5" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="9.5" r="2.2" fill="#fff"/><circle cx="11.5" cy="14.5" r="1.9" fill="#fff"/><circle cx="24.5" cy="14.5" r="1.9" fill="#fff"/><circle cx="12.5" cy="23.5" r="1.9" fill="#fff"/><circle cx="23.5" cy="23.5" r="1.9" fill="#fff"/><circle cx="18" cy="19" r="3" fill="#fff"/><circle cx="18" cy="19" r="1.3" fill="#5B3DF5"/></svg></span>BrainSize</a>
+    <span class="ava">AR</span>
+  </div>
+
+  <!-- ===== MAIN ===== -->
+  <main class="main">
+    <div class="wrapm">
+      <header class="top">
+        <div class="hello">
+          <h1>Good morning, Alex</h1>
+          <p id="today">Your mind, at a glance</p>
+        </div>
+        <span class="streak"><svg viewBox="0 0 24 24"><path d="M12 2c1 3-1 4-1 6a3 3 0 0 0 6 0c0-1 1 1 1 3a6 6 0 1 1-11-2c1.5-2 4-2 5-5z"/></svg>5-day streak</span>
+        <a class="btn sp" href="/instructions"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>Take a test</a>
+      </header>
+
+      <div class="grid">
+
+        <!-- snapshot -->
+        <section class="card snap c7">
+          <h3>Your latest result</h3>
+          <div class="snap-row">
+            <div>
+              <div class="iqlbl">Estimated IQ</div>
+              <div class="iq">124</div>
+            </div>
+            <div class="meta">
+              <span class="pill"><svg viewBox="0 0 24 24"><path d="M4 20V8l8-5 8 5v12M4 20h16M9 20v-6h6v6"/></svg>The Architect</span>
+              <span class="sub">95th percentile &middot; spatial + logic</span>
+            </div>
+          </div>
+          <div class="snap-stats">
+            <div class="ss"><span>Strongest domain</span><b>Logical reasoning</b></div>
+            <div class="ss"><span>Most improved</span><b>Spatial &middot; +8</b></div>
+          </div>
+          <div class="snap-foot">
+            <span class="retest">Last tested 6 days ago &middot; <b>retest ready</b></span>
+            <a class="btn light sm" href="/results" style="margin-left:auto">View full report</a>
+          </div>
+        </section>
+
+        <!-- radar -->
+        <section class="card c5">
+          <h3>Your mind, mapped <a class="link" href="/progress">Details</a></h3>
+          <div class="radar-wrap">
+            <svg id="radar" viewBox="-30 -8 300 240"></svg>
+            <div class="radar-key" id="radarKey"></div>
+          </div>
+        </section>
+
+        <!-- trend -->
+        <section class="card c7">
+          <h3>Your progress <a class="link" href="/progress">All stats</a></h3>
+          <div class="trend-head">
+            <span class="big">124</span>
+            <span class="delta">+16 pts</span>
+            <span class="since">since March &middot; 4 tests</span>
+          </div>
+          <svg id="trend" viewBox="0 0 560 200"></svg>
+        </section>
+
+        <!-- daily training -->
+        <section class="card c5">
+          <h3>Today's training</h3>
+          <div class="ring-row">
+            <div class="ring">
+              <svg viewBox="0 0 84 84" width="84" height="84">
+                <circle cx="42" cy="42" r="36" fill="none" stroke="#EeEbF7" stroke-width="9"/>
+                <circle cx="42" cy="42" r="36" fill="none" stroke="#5B3DF5" stroke-width="9" stroke-linecap="round" stroke-dasharray="226.2" stroke-dashoffset="150.8"/>
+              </svg>
+              <div class="rc"><b>1/3</b><span>done</span></div>
+            </div>
+            <div class="rt">
+              <h4>Keep the streak alive</h4>
+              <p>Two games left today. About 6 minutes.</p>
+            </div>
+          </div>
+          <div class="tasklist">
+            <div class="task done"><span class="ck"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span><span class="tn">Matrix Sprint</span><span class="dom">Pattern</span></div>
+            <div class="task"><span class="ck"></span><span class="tn">Rotation Rush</span><span class="dom">Spatial</span></div>
+            <div class="task"><span class="ck"></span><span class="tn">Memory Grid</span><span class="dom">Memory</span></div>
+          </div>
+          <a class="btn" href="/games" style="width:100%">Start next game</a>
+        </section>
+
+        <!-- continue learning -->
+        <section class="card prog-card c4">
+          <h3>Continue learning</h3>
+          <div class="prog-thumb"><svg viewBox="0 0 24 24"><path d="M2 7l10-4 10 4-10 4z"/><path d="M6 10v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg></div>
+          <h4>Spatial Reasoning Bootcamp</h4>
+          <div class="meta">Day 4 of 10 &middot; 40% complete</div>
+          <div class="pbar"><i style="width:40%"></i></div>
+          <a class="btn ghost" href="/learn">Resume program</a>
+        </section>
+
+        <!-- recent activity -->
+        <section class="card c4">
+          <h3>Recent activity <a class="link" href="/progress">History</a></h3>
+          <div class="feed">
+            <div class="fitem"><span class="fic"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="4"/><path d="M7 12h3M8.5 10.5v3"/></svg></span><span><div class="ft">Matrix Sprint</div><div class="fs">Today &middot; Pattern</div></span><span class="fv">96th</span></div>
+            <div class="fitem"><span class="fic"><svg viewBox="0 0 24 24"><path d="M4 19.5V5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/></svg></span><span><div class="ft">Read: How rotation puzzles work</div><div class="fs">Yesterday &middot; 5 min</div></span></div>
+            <div class="fitem"><span class="fic"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span><span><div class="ft">Completed Test #4</div><div class="fs">6 days ago</div></span><span class="fv pos">+5</span></div>
+            <div class="fitem"><span class="fic"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="4"/><circle cx="16" cy="11" r="1"/><circle cx="18.5" cy="13.5" r="1"/></svg></span><span><div class="ft">Memory Grid</div><div class="fs">2 days ago &middot; Memory</div></span><span class="fv">88th</span></div>
+          </div>
+        </section>
+
+        <!-- leaderboard rank -->
+        <section class="card lb-card c4">
+          <h3>Leaderboard</h3>
+          <div class="lb-rank">#142</div>
+          <div class="lb-sub">of 8,400 active members this month</div>
+          <span class="lb-move"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>Up 23 spots this week</span>
+          <a class="btn ghost" href="/leaderboard">View leaderboard</a>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- ===== MOBILE TABS ===== -->
+  <nav class="tabbar">
+    <a class="tab active" href="/dashboard"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Home</a>
+    <a class="tab" href="/games"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="4"/><path d="M7 12h3M8.5 10.5v3"/><circle cx="16" cy="11" r="1"/><circle cx="18.5" cy="13.5" r="1"/></svg>Games</a>
+    <a class="tab" href="/learn"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M19 3v18"/></svg>Learn</a>
+    <a class="tab" href="/progress"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 14l3-4 3 3 5-7"/></svg>Progress</a>
+    <a class="tab" href="/account"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Account</a>
+  </nav>
+</div>
+
+<script>
+"use strict";
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+/* ---------- domain radar (5-axis pentagon) ---------- */
+(function(){
+  const domains=[['Pattern',119],['Logic',128],['Spatial',126],['Memory',120],['Speed',116]];
+  const cx=120,cy=118,R=78, n=5;
+  const norm=v=>clamp((v-85)/(140-85),0,1);
+  const pt=(i,r)=>{const a=(-90+i*360/n)*Math.PI/180;return [cx+r*Math.cos(a),cy+r*Math.sin(a)];};
+  let s='';
+  // rings
+  [0.25,0.5,0.75,1].forEach(f=>{
+    const p=Array.from({length:n},(_,i)=>pt(i,R*f).map(x=>x.toFixed(1)).join(',')).join(' ');
+    s+=`<polygon points="${p}" fill="${f===1?'#FAF9FE':'none'}" stroke="#E7E3F2" stroke-width="1"/>`;
+  });
+  // axes
+  for(let i=0;i<n;i++){const[x,y]=pt(i,R);s+=`<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="#E7E3F2" stroke-width="1"/>`;}
+  // data polygon
+  const dp=domains.map((d,i)=>pt(i,R*norm(d[1])).map(x=>x.toFixed(1)).join(',')).join(' ');
+  s+=`<defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9B85FF"/><stop offset="1" stop-color="#5B3DF5"/></linearGradient></defs>`;
+  s+=`<polygon points="${dp}" fill="url(#rg)" fill-opacity="0.28" stroke="#5B3DF5" stroke-width="2.4" stroke-linejoin="round"/>`;
+  domains.forEach((d,i)=>{const[x,y]=pt(i,R*norm(d[1]));s+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.4" fill="#5B3DF5" stroke="#fff" stroke-width="1.5"/>`;});
+  // labels
+  const lbl=['Pattern','Logic','Spatial','Memory','Speed'];
+  domains.forEach((d,i)=>{
+    let[x,y]=pt(i,R+19); let anchor='middle';
+    if(x>cx+6)anchor='start'; else if(x<cx-6)anchor='end';
+    s+=`<text x="${x.toFixed(1)}" y="${(y+3).toFixed(1)}" text-anchor="${anchor}" font-family="Plus Jakarta Sans,Arial" font-size="11" font-weight="700" fill="#9A9AA6">${lbl[i]}</text>`;
+  });
+  document.getElementById('radar').innerHTML=s;
+  // key
+  document.getElementById('radarKey').innerHTML=domains.map(d=>`<span class="rk"><span class="dotk"></span>${d[0]}<b>${d[1]}</b></span>`).join('');
+})();
+
+/* ---------- score trend line chart ---------- */
+(function(){
+  const data=[['Mar',108],['Apr',113],['May',119],['Jun',124]];
+  const W=560,H=200,pad={l:38,r:18,t:18,b:30};
+  const ys=[100,110,120,130], yMin=98,yMax=132;
+  const X=i=>pad.l+(W-pad.l-pad.r)*(i/(data.length-1));
+  const Y=v=>pad.t+(H-pad.t-pad.b)*(1-(v-yMin)/(yMax-yMin));
+  let s='';
+  ys.forEach(g=>{const y=Y(g);s+=`<line x1="${pad.l}" y1="${y.toFixed(1)}" x2="${W-pad.r}" y2="${y.toFixed(1)}" stroke="#EEEBF6" stroke-width="1"/><text x="${pad.l-9}" y="${(y+4).toFixed(1)}" text-anchor="end" font-family="Plus Jakarta Sans,Arial" font-size="11" font-weight="600" fill="#C7C4D2">${g}</text>`;});
+  data.forEach((d,i)=>{s+=`<text x="${X(i).toFixed(1)}" y="${H-9}" text-anchor="middle" font-family="Plus Jakarta Sans,Arial" font-size="11" font-weight="700" fill="#9A9AA6">${d[0]}</text>`;});
+  const line=data.map((d,i)=>`${X(i).toFixed(1)},${Y(d[1]).toFixed(1)}`).join(' ');
+  const area=`${pad.l},${(H-pad.b)} `+line+` ${(W-pad.r)},${(H-pad.b)}`;
+  s+=`<defs><linearGradient id="ar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5B3DF5" stop-opacity="0.18"/><stop offset="1" stop-color="#5B3DF5" stop-opacity="0"/></linearGradient></defs>`;
+  s+=`<polygon points="${area}" fill="url(#ar)"/>`;
+  s+=`<polyline points="${line}" fill="none" stroke="#5B3DF5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`;
+  data.forEach((d,i)=>{const last=i===data.length-1;s+=`<circle cx="${X(i).toFixed(1)}" cy="${Y(d[1]).toFixed(1)}" r="${last?5.5:4}" fill="${last?'#5B3DF5':'#fff'}" stroke="#5B3DF5" stroke-width="2.5"/>`;});
+  // last label
+  const lx=X(data.length-1),ly=Y(data[data.length-1][1]);
+  s+=`<g transform="translate(${(lx-30).toFixed(1)},${(ly-30).toFixed(1)})"><rect width="46" height="22" rx="6" fill="#16121f"/><text x="23" y="15" text-anchor="middle" font-family="Plus Jakarta Sans,Arial" font-size="12" font-weight="800" fill="#fff">124</text></g>`;
+  document.getElementById('trend').innerHTML=s;
+})();
+
+const t=new Date();
+document.getElementById('today').textContent=t.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+</script>
+</body>
+</html>

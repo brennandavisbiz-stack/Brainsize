@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matrix Sprint | BrainSize</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --brand-600:#5B3DF5;--brand-700:#4A2FD9;--brand-500:#7A5CFF;--brand-400:#9B85FF;
+    --brand-100:#ECE8FE;--brand-050:#F5F3FF;
+    --ink-900:#111114;--ink-600:#5A5A66;--ink-400:#9A9AA6;
+    --surface:#FFFFFF;--surface-alt:#F7F7F9;--border:#ECECF1;
+    --green:#1D7A3E;--green-bg:#E7F6EC;--red:#C0392B;--red-bg:#FCEBEA;--amber:#B07D12;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:var(--ink-900);line-height:1.5;-webkit-font-smoothing:antialiased;
+    background:radial-gradient(800px 460px at 50% -10%, #efeafe, transparent 60%),#FBFAFE;min-height:100vh;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+  /* top bar */
+  .bar{position:sticky;top:0;z-index:30;background:rgba(251,250,254,.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+  .bar-in{max-width:680px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:14px}
+  .back{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:700;color:var(--ink-600);flex:none}
+  .back svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+  .back:hover{color:var(--ink-900)}
+  .gtitle{font-size:14px;font-weight:800;letter-spacing:-.01em}
+  .live{margin-left:auto;display:flex;align-items:center;gap:18px}
+  .live .st{text-align:right;line-height:1}
+  .live .st .k{font-size:9.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-400)}
+  .live .st .v{font-size:18px;font-weight:800;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+  .live #score .v{transition:transform .14s}
+  .live #timeV.low{color:var(--red)}
+  .hidden{display:none!important}
+
+  .wrap{max-width:680px;margin:0 auto;padding:0 20px}
+
+  /* ready */
+  .ready{text-align:center;padding:56px 0 70px;animation:fade .4s ease both}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .gicon{width:74px;height:74px;border-radius:20px;background:linear-gradient(135deg,#5B3DF5,#9B85FF);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;box-shadow:0 12px 30px rgba(91,61,245,.32)}
+  .gicon svg{width:40px;height:40px;stroke:#fff;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .ready h1{font-size:clamp(30px,6vw,40px);font-weight:800;letter-spacing:-.025em;margin-bottom:12px}
+  .ready .sub{font-size:17px;color:var(--ink-600);font-weight:500;max-width:430px;margin:0 auto 28px}
+  .rules{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:34px}
+  .rchip{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--ink-600);background:#fff;border:1px solid var(--border);border-radius:99px;padding:9px 15px}
+  .rchip svg{width:15px;height:15px;stroke:var(--brand-600);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+  .rchip b{color:var(--ink-900)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;background:var(--brand-600);color:#fff;font-weight:700;border:none;border-radius:99px;padding:16px 42px;font-size:17px;transition:background .15s,transform .15s,box-shadow .15s;box-shadow:0 10px 26px rgba(91,61,245,.32)}
+  .btn:hover{background:var(--brand-700);transform:translateY(-2px)}
+  .btn:active{transform:translateY(0)}
+  .btn.ghost{background:#fff;color:var(--brand-600);border:1.5px solid #d8d0fb;box-shadow:none}
+  .btn.ghost:hover{background:var(--brand-050)}
+  .ready .best{margin-top:18px;font-size:13.5px;color:var(--ink-400);font-weight:700}
+  .ready .best b{color:var(--brand-600)}
+
+  /* countdown */
+  .count{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:rgba(251,250,254,.96)}
+  .count .num{font-size:120px;font-weight:800;color:var(--brand-600);letter-spacing:-.04em;animation:pop .9s ease}
+  @keyframes pop{0%{transform:scale(.4);opacity:0}40%{transform:scale(1);opacity:1}100%{transform:scale(1.5);opacity:0}}
+
+  /* play */
+  .play{padding:22px 0 60px}
+  .progress-time{height:6px;border-radius:99px;background:#E9E6F4;overflow:hidden;margin-bottom:26px}
+  .progress-time i{display:block;height:100%;background:linear-gradient(90deg,#9B85FF,#5B3DF5);width:100%}
+  .progress-time i.low{background:linear-gradient(90deg,#E8836F,#C0392B)}
+  .q-kind{text-align:center;font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--ink-400);text-transform:uppercase;margin-bottom:14px}
+  .figure{display:flex;justify-content:center;margin:0 auto 22px;min-height:200px;align-items:center}
+  .combo-pop{position:fixed;left:50%;top:20%;transform:translate(-50%,-50%);font-size:28px;font-weight:800;color:var(--brand-600);pointer-events:none;opacity:0;z-index:20}
+  .combo-pop.go{animation:combo .65s ease}
+  @keyframes combo{0%{opacity:0;transform:translate(-50%,-20%) scale(.7)}25%{opacity:1;transform:translate(-50%,-60%) scale(1.1)}100%{opacity:0;transform:translate(-50%,-110%) scale(1)}}
+
+  /* puzzle figures (shared with test) */
+  .figwrap{animation:swap .26s ease both}
+  @keyframes swap{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:none}}
+  .mtx{display:grid;gap:7px;background:#E9E6F4;padding:7px;border-radius:16px}
+  .cell{background:#fff;border-radius:10px;width:var(--cs);height:var(--cs);display:flex;align-items:center;justify-content:center}
+  .cell.q{background:var(--brand-050);border:2px dashed #c4b8f7}
+  .cell svg{width:80%;height:80%;display:block}
+  .qmark{font-size:28px;font-weight:800;color:var(--brand-400)}
+  .seq{display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:center}
+  .seq .arrowi{color:var(--ink-400);font-size:17px;font-weight:700}
+
+  .opts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;max-width:380px;margin:0 auto}
+  .opt{position:relative;background:#fff;border:2px solid var(--border);border-radius:15px;padding:13px;display:flex;align-items:center;justify-content:center;aspect-ratio:1;transition:border-color .12s,transform .1s,box-shadow .12s,background .12s}
+  .opt:hover{border-color:#c4b8f7;transform:translateY(-2px)}
+  .opt svg{width:76%;height:76%;display:block;pointer-events:none}
+  .opt.right{border-color:var(--green);background:var(--green-bg);box-shadow:0 0 0 4px rgba(29,122,62,.14)}
+  .opt.wrong{border-color:var(--red);background:var(--red-bg);animation:shake .3s}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+  .opt.lock{pointer-events:none}
+
+  /* results */
+  .results{padding:40px 0 70px;text-align:center;animation:fade .4s ease both}
+  .r-eyebrow{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--brand-600);background:var(--brand-100);padding:7px 15px;border-radius:99px;margin-bottom:18px}
+  .r-score{font-size:clamp(56px,14vw,84px);font-weight:800;letter-spacing:-.03em;line-height:1;background:linear-gradient(120deg,#5B3DF5,#9B85FF);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .r-scorelbl{font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-400);margin-top:6px}
+  .newbest{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:800;color:var(--amber);background:#FBF1D8;padding:7px 15px;border-radius:99px;margin-top:16px}
+  .newbest svg{width:15px;height:15px;fill:currentColor}
+  .r-stats{display:flex;justify-content:center;gap:14px;margin:30px auto;max-width:440px;flex-wrap:wrap}
+  .r-stat{flex:1;min-width:120px;background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px 14px;box-shadow:0 8px 24px rgba(17,17,20,.04)}
+  .r-stat .v{font-size:26px;font-weight:800;letter-spacing:-.02em}
+  .r-stat .k{font-size:12px;font-weight:700;color:var(--ink-400);margin-top:2px}
+  .r-train{font-size:14px;font-weight:600;color:var(--ink-600);background:var(--surface-alt);border-radius:14px;padding:14px 18px;max-width:440px;margin:0 auto 28px;display:flex;align-items:center;gap:10px;justify-content:center}
+  .r-train svg{width:18px;height:18px;stroke:var(--green);fill:none;stroke-width:2.2}
+  .r-train b{color:var(--ink-900)}
+  .r-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+  @media (max-width:480px){
+    .opts{max-width:330px}
+    .live{gap:13px}
+    .live .st .v{font-size:16px}
+  }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="bar-in">
+    <a class="back" href="/games"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>Games</a>
+    <span class="gtitle hidden" id="barTitle">Matrix Sprint</span>
+    <div class="live hidden" id="live">
+      <div class="st" id="combo"><div class="k">Combo</div><div class="v" id="comboV">x1</div></div>
+      <div class="st" id="score"><div class="k">Score</div><div class="v" id="scoreV">0</div></div>
+      <div class="st"><div class="k">Time</div><div class="v" id="timeV">0:60</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- READY -->
+<section class="wrap ready" id="s-ready">
+  <div class="gicon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
+  <h1>Matrix Sprint</h1>
+  <p class="sub">Solve as many pattern puzzles as you can in 60 seconds. Keep your streak alive for a bigger multiplier.</p>
+  <div class="rules">
+    <span class="rchip"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><b>60</b> seconds</span>
+    <span class="rchip"><svg viewBox="0 0 24 24"><path d="M13 2L5 14h6l-1 8 8-12h-6z"/></svg>Fast answers score more</span>
+    <span class="rchip"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>Wrong answer costs <b>2s</b></span>
+  </div>
+  <button class="btn" id="startBtn">Start sprint</button>
+  <p class="best" id="bestLine">Personal best <b>1,240</b></p>
+</section>
+
+<!-- COUNTDOWN -->
+<div class="count hidden" id="countdown"><div class="num" id="countNum">3</div></div>
+
+<!-- PLAY -->
+<section class="wrap play hidden" id="s-play">
+  <div class="progress-time"><i id="timeBar"></i></div>
+  <div class="q-kind" id="qkind">Pattern</div>
+  <div class="figure" id="qfig"></div>
+  <div class="opts" id="qopts"></div>
+</section>
+<div class="combo-pop" id="comboPop"></div>
+
+<!-- RESULTS -->
+<section class="wrap results hidden" id="s-results">
+  <span class="r-eyebrow">Sprint complete</span>
+  <div class="r-score" id="finalScore">0</div>
+  <div class="r-scorelbl">Points</div>
+  <div id="newBestWrap"></div>
+  <div class="r-stats">
+    <div class="r-stat"><div class="v" id="stSolved">0</div><div class="k">Solved</div></div>
+    <div class="r-stat"><div class="v" id="stAcc">0%</div><div class="k">Accuracy</div></div>
+    <div class="r-stat"><div class="v" id="stCombo">x1</div><div class="k">Best combo</div></div>
+  </div>
+  <div class="r-train"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Logged to your <b>Pattern recognition</b> training</div>
+  <div class="r-actions">
+    <button class="btn ghost" id="againBtn">Play again</button>
+    <a class="btn" href="/games">Back to games</a>
+  </div>
+</section>
+
+<script>
+"use strict";
+const $=s=>document.querySelector(s);
+const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
+
+/* ===== puzzle generators (reused from the assessment) ===== */
+const C='#1b1b22', ACC='#5B3DF5';
+function svg(inner,vb='0 0 100 100'){return `<svg viewBox="${vb}" xmlns="http://www.w3.org/2000/svg">${inner}</svg>`;}
+function ngon(n,cx,cy,r,rot=-90){let p=[];for(let i=0;i<n;i++){const a=(rot+i*360/n)*Math.PI/180;p.push((cx+r*Math.cos(a)).toFixed(1)+','+(cy+r*Math.sin(a)).toFixed(1));}return p.join(' ');}
+function gWrap(inner,rot=0,mirror=false){let t=[];if(mirror)t.push('translate(100,0) scale(-1,1)');if(rot)t.push(`rotate(${rot} 50 50)`);return t.length?`<g transform="${t.join(' ')}">${inner}</g>`:inner;}
+const SHAPES={
+  flag:`<line x1="34" y1="22" x2="34" y2="78" stroke="${C}" stroke-width="5" stroke-linecap="round"/><path d="M34 24 L66 33 L34 46 Z" fill="${C}"/>`,
+  arrow:`<line x1="26" y1="50" x2="68" y2="50" stroke="${C}" stroke-width="5" stroke-linecap="round"/><polyline points="54,36 70,50 54,64" fill="none" stroke="${C}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>`,
+  ell:`<polyline points="38,24 38,74 70,74" fill="none" stroke="${C}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>`,
+  key:`<circle cx="40" cy="40" r="13" fill="none" stroke="${C}" stroke-width="5"/><line x1="49" y1="49" x2="72" y2="72" stroke="${C}" stroke-width="5" stroke-linecap="round"/><line x1="64" y1="72" x2="72" y2="64" stroke="${C}" stroke-width="5" stroke-linecap="round"/>`,
+};
+function shape(name,rot=0,mirror=false){return svg(gWrap(SHAPES[name],rot,mirror));}
+const DOTLAYOUT={1:[[50,50]],2:[[35,50],[65,50]],3:[[28,50],[50,50],[72,50]],4:[[34,34],[66,34],[34,66],[66,66]],5:[[34,34],[66,34],[50,50],[34,66],[66,66]],6:[[32,36],[50,36],[68,36],[32,64],[50,64],[68,64]],7:[[32,32],[50,32],[68,32],[50,50],[32,68],[50,68],[68,68]],8:[[32,32],[50,32],[68,32],[32,50],[68,50],[32,68],[50,68],[68,68]],9:[[32,32],[50,32],[68,32],[32,50],[50,50],[68,50],[32,68],[50,68],[68,68]]};
+function dots(n,fill=ACC){return svg(DOTLAYOUT[n].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="7" fill="${fill}"/>`).join(''));}
+function miniGrid(set,g){const pad=18,size=(100-pad*2)/g,r=[];for(let i=0;i<g*g;i++){const cx=pad+(i%g)*size,cy=pad+Math.floor(i/g)*size;const on=set.includes(i);r.push(`<rect x="${cx+2}" y="${cy+2}" width="${size-4}" height="${size-4}" rx="3" fill="${on?ACC:'none'}" stroke="${on?ACC:'#d7d4e0'}" stroke-width="2"/>`);}return svg(r.join(''));}
+function polyShape(n,rot=-90,fill=false){const pts=ngon(n,50,52,30,rot);return svg(`<polygon points="${pts}" fill="${fill?ACC:'none'}" stroke="${ACC}" stroke-width="5" stroke-linejoin="round"/>`);}
+function eqSet(a,b){return a.length===b.length&&a.every((v,i)=>v===b[i]);}
+function dedupe(opts){const seen=new Set();const out=[];for(const o of opts){if(seen.has(o.svg))continue;seen.add(o.svg);out.push(o);}let i=0;const names=['flag','arrow','ell','key'];while(out.length<4){const ex=shape(pick(names),rnd(1,7)*45);if(!seen.has(ex)){seen.add(ex);out.push({svg:ex});}if(++i>20)break;}return out.slice(0,4);}
+const J=()=>rnd(-5,5);
+function finalize(kind,kindLabel,prompt,fig,opts,difficulty){opts=shuffle(opts);const answer=opts.findIndex(o=>o.ok);return {kind,kindLabel,prompt,fig,opts,answer,difficulty:clamp(Math.round(difficulty),72,142)};}
+function matrixFig(cells,g){const cs=g===3?'min(82px, 22vw)':'90px';const inner=cells.map(c=>c.q?`<div class="cell q"><span class="qmark">?</span></div>`:`<div class="cell">${c.svg}</div>`).join('');return `<div class="figwrap"><div class="mtx" style="grid-template-columns:repeat(${g},1fr);--cs:${cs}">${inner}</div></div>`;}
+function seqFig(items){const parts=[];items.forEach(s=>{parts.push(`<div class="cell" style="--cs:74px">${s}</div>`);parts.push('<span class="arrowi">&rarr;</span>');});parts.push(`<div class="cell q" style="--cs:74px"><span class="qmark">?</span></div>`);return `<div class="figwrap"><div class="seq">${parts.join('')}</div></div>`;}
+
+function genRotation(){const name=pick(['flag','arrow','ell','key']);const[rowStep,colStep]=pick([[90,90],[90,45],[45,90],[45,45]]);const ang=(r,c)=>((r*rowStep+c*colStep)%360+360)%360;const cells=[];for(let r=0;r<3;r++)for(let c=0;c<3;c++){if(r===2&&c===2){cells.push({q:true});continue;}cells.push({svg:shape(name,ang(r,c))});}const correct=ang(2,2);let opts=[{svg:shape(name,correct),ok:true},{svg:shape(name,((correct-colStep)%360+360)%360)},{svg:shape(name,((correct+colStep)%360+360)%360)},{svg:shape(name,correct,true)}];opts=dedupe(opts);const hard=(rowStep===45||colStep===45);return finalize('matrix','Spatial','',matrixFig(cells,3),opts,96+(hard?20:0)+(rowStep!==0?5:0)+J());}
+function genCount(){const d=pick([1,2]);const base=rnd(1,3);const val=(r,c)=>base+r+c*d;if(val(2,2)>9)return genCount();const cells=[];for(let r=0;r<3;r++)for(let c=0;c<3;c++){if(r===2&&c===2){cells.push({q:true});continue;}cells.push({svg:dots(val(r,c))});}const correct=val(2,2);let cand=[correct,correct-1,correct+1,val(2,1)].filter(v=>v>=1&&v<=9);cand=Array.from(new Set(cand));while(cand.length<4){const v=rnd(1,9);if(!cand.includes(v))cand.push(v);}cand=cand.slice(0,4);if(!cand.includes(correct))cand[0]=correct;const opts=cand.map(v=>({svg:dots(v),ok:v===correct}));return finalize('matrix','Pattern','',matrixFig(cells,3),opts,90+(d===2?14:0)+(val(2,2)>6?6:0)+J());}
+function genSuper(){const g=pick([2,2,3]);const N=g*g;const rndSet=()=>{const k=rnd(1,N-1);return shuffle([...Array(N).keys()]).slice(0,k).sort((a,b)=>a-b);};const rows=[];for(let r=0;r<3;r++){let A,B,U,tries=0;do{A=rndSet();B=rndSet();U=Array.from(new Set([...A,...B])).sort((a,b)=>a-b);tries++;}while((eqSet(A,B)||eqSet(U,A)||eqSet(U,B)||U.length===N)&&tries<40);rows.push({A,B,U});}const cells=[];for(let r=0;r<3;r++){cells.push({svg:miniGrid(rows[r].A,g)});cells.push({svg:miniGrid(rows[r].B,g)});if(r===2)cells.push({q:true});else cells.push({svg:miniGrid(rows[r].U,g)});}const{A,B,U}=rows[2];const inter=A.filter(x=>B.includes(x)).sort((a,b)=>a-b);const xor=Array.from(new Set([...A,...B])).filter(x=>!(A.includes(x)&&B.includes(x))).sort((a,b)=>a-b);let opts=[{set:U,ok:true},{set:inter},{set:xor},{set:A}];opts=opts.filter((o,i)=>i===0||!eqSet(o.set,U));while(opts.length<4){const s=shuffle([...Array(N).keys()]).slice(0,rnd(1,N-1)).sort((a,b)=>a-b);if(!opts.some(o=>eqSet(o.set,s)))opts.push({set:s});}opts=opts.slice(0,4).map(o=>({svg:miniGrid(o.set,g),ok:!!o.ok}));return finalize('matrix','Logic','',matrixFig(cells,3),opts,104+(g===3?20:0)+J());}
+function genSequence(){const inc=pick([1,2]);const s0=rnd(3,Math.max(3,7-2*inc));const seq=[s0,s0+inc,s0+2*inc];const ans=s0+3*inc;const fig=seqFig(seq.map(n=>polyShape(n)));let cand=[ans,ans-1,ans+1,ans-inc].filter(v=>v>=3&&v<=10);cand=Array.from(new Set(cand));while(cand.length<4){const v=rnd(3,10);if(!cand.includes(v))cand.push(v);}cand=cand.slice(0,4);if(!cand.includes(ans))cand[0]=ans;const opts=cand.map(v=>({svg:polyShape(v),ok:v===ans}));return finalize('sequence','Pattern','',fig,opts,84+(inc===2?12:0)+J());}
+const GENS=[genRotation,genCount,genSuper,genSequence];
+
+/* ===== game state ===== */
+const DURATION=60000;
+let remaining,running,lastT,raf;
+let score,solved,attempts,combo,bestCombo,qStart,cur,locked;
+function loadBest(){try{return Number(localStorage.getItem('bs_sprint_best')||1240);}catch(e){return 1240;}}
+function saveBest(v){try{localStorage.setItem('bs_sprint_best',String(v));}catch(e){}}
+let best=loadBest();
+
+function show(id){['s-ready','s-play','s-results'].forEach(x=>$('#'+x).classList.add('hidden'));$('#'+id).classList.remove('hidden');}
+
+function begin(){
+  score=0;solved=0;attempts=0;combo=0;bestCombo=0;remaining=DURATION;locked=false;
+  $('#barTitle').classList.remove('hidden');$('#live').classList.remove('hidden');
+  updateHUD();
+  // countdown
+  const cd=$('#countdown'),num=$('#countNum');cd.classList.remove('hidden');
+  let n=3;num.textContent=n;
+  const iv=setInterval(()=>{
+    n--;
+    if(n>0){num.textContent=n;num.style.animation='none';void num.offsetWidth;num.style.animation='pop .9s ease';}
+    else if(n===0){num.textContent='Go';num.style.animation='none';void num.offsetWidth;num.style.animation='pop .9s ease';}
+    else{clearInterval(iv);cd.classList.add('hidden');startPlay();}
+  },800);
+}
+
+function startPlay(){
+  show('s-play');
+  nextPuzzle();
+  running=true;lastT=performance.now();raf=requestAnimationFrame(tick);
+}
+
+function tick(now){
+  if(!running)return;
+  remaining-=(now-lastT);lastT=now;
+  if(remaining<=0){remaining=0;updateTimer();return endGame();}
+  updateTimer();raf=requestAnimationFrame(tick);
+}
+
+function updateTimer(){
+  const secs=Math.ceil(remaining/1000);
+  const tv=$('#timeV');tv.textContent='0:'+String(secs).padStart(2,'0');
+  const frac=remaining/DURATION;
+  const bar=$('#timeBar');bar.style.width=(frac*100)+'%';
+  const low=secs<=10;
+  tv.classList.toggle('low',low);bar.classList.toggle('low',low);
+}
+function updateHUD(){$('#scoreV').textContent=score.toLocaleString();$('#comboV').textContent='x'+(1+combo*0.1).toFixed(1);}
+
+function nextPuzzle(){
+  const target=clamp(86+solved*2.4,85,138);
+  let best=null,bd=1e9;
+  for(let i=0;i<6;i++){let it;try{it=pick(GENS)();}catch(e){continue;}const d=Math.abs(it.difficulty-target);if(d<bd){bd=d;best=it;}}
+  cur=best||genSequence();locked=false;
+  $('#qkind').textContent=cur.kindLabel;
+  $('#qfig').innerHTML=cur.fig;
+  const wrap=$('#qopts');wrap.innerHTML='';
+  cur.opts.forEach((o,i)=>{const b=document.createElement('button');b.className='opt';b.innerHTML=o.svg;b.onclick=()=>choose(i,b);wrap.appendChild(b);});
+  qStart=performance.now();
+}
+
+function choose(i,btn){
+  if(locked||!running)return;locked=true;
+  document.querySelectorAll('.opt').forEach(o=>o.classList.add('lock'));
+  const rt=performance.now()-qStart;
+  attempts++;
+  if(i===cur.answer){
+    btn.classList.add('right');
+    solved++;combo++;bestCombo=Math.max(bestCombo,combo);
+    const speedBonus=Math.round(clamp((2500-rt)/2500,0,1)*60);
+    const mult=1+ (combo-1)*0.1;
+    const pts=Math.round((100+speedBonus)*mult);
+    score+=pts;
+    showCombo(combo,pts);
+    updateHUD();
+    setTimeout(nextPuzzle,230);
+  }else{
+    btn.classList.add('wrong');
+    combo=0;updateHUD();
+    remaining=Math.max(0,remaining-2000);updateTimer();
+    setTimeout(nextPuzzle,360);
+  }
+}
+
+function showCombo(c,pts){
+  if(c<2)return;
+  const el=$('#comboPop');el.textContent='x'+(1+(c-1)*0.1).toFixed(1)+'  +'+pts;
+  el.classList.remove('go');void el.offsetWidth;el.classList.add('go');
+}
+
+function endGame(){
+  running=false;cancelAnimationFrame(raf);
+  $('#live').classList.add('hidden');$('#barTitle').classList.add('hidden');
+  const isBest=score>best;
+  if(isBest){best=score;saveBest(best);}
+  $('#finalScore').textContent='0';
+  $('#stSolved').textContent=solved;
+  $('#stAcc').textContent=(attempts?Math.round(100*solved/attempts):0)+'%';
+  $('#stCombo').textContent='x'+(1+Math.max(0,bestCombo-1)*0.1).toFixed(1);
+  $('#newBestWrap').innerHTML=isBest?'<div class="newbest"><svg viewBox="0 0 24 24"><path d="M12 2l3 6 6 .9-4.5 4.3L18 20l-6-3-6 3 1.5-6.8L3 8.9 9 8z"/></svg>New personal best</div>':'';
+  show('s-results');
+  // count up final score
+  const t0=performance.now();const dur=900;
+  (function up(now){const p=Math.min((now-t0)/dur,1);const e=1-Math.pow(1-p,3);$('#finalScore').textContent=Math.round(score*e).toLocaleString();if(p<1)requestAnimationFrame(up);})(t0);
+}
+
+/* wiring */
+$('#bestLine').innerHTML='Personal best <b>'+best.toLocaleString()+'</b>';
+$('#startBtn').onclick=begin;
+$('#againBtn').onclick=begin;
+addEventListener('keydown',e=>{
+  if(!$('#s-play').classList.contains('hidden')){
+    const n=parseInt(e.key);const opts=document.querySelectorAll('#qopts .opt');
+    if(n>=1&&n<=opts.length)opts[n-1].click();
+  }
+  if(!$('#s-ready').classList.contains('hidden')&&e.key==='Enter')begin();
+});
+window.__sprint={begin,get state(){return{score,solved,attempts,combo,bestCombo,remaining};},get cur(){return cur;},end:endGame};
+</script>
+</body>
+</html>
